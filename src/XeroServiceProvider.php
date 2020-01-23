@@ -44,9 +44,10 @@ class XeroServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->app->singleton(Configuration::class, function (Application $app, OauthCredentialManager $credentials) {
+        $this->app->singleton(Configuration::class, function (Application $app) {
+            $credentials = $app->make(OauthCredentialManager::class);
             $config = Configuration::getDefaultConfiguration();
-            $config->setHost('https://api.xero.com');
+            $config->setHost(config('xero.api_host'));
 
             if ($credentials->exists()) {
                 //expires
@@ -65,11 +66,12 @@ class XeroServiceProvider extends ServiceProvider
 
         });
 
-        $this->app->singleton(IdentityApi::class, function (Application $app, Configuration $xeroConfig) {
-            return new IdentityApi(new GuzzleClient(), $xeroConfig);
+        $this->app->singleton(IdentityApi::class, function (Application $app) {
+            return new IdentityApi(new GuzzleClient(), $app->make(Configuration::class));
         });
 
-        $this->app->singleton(AccountingApi::class, function (Application $app, Configuration $xeroConfig) {
+        $this->app->singleton(AccountingApi::class, function (Application $app) {
+            return new AccountingApi(new GuzzleClient(), $app->make(Configuration::class));
         });
     }
 }

@@ -96,8 +96,8 @@ class OauthCredentialManager
         $this->cache->set($this->cacheKey, [
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
-            'id_token'      => $token->getValues(),
-            'expires'       => $token->getExpires()['id_token'],
+            'id_token'      => $token->getValues()['id_token'],
+            'expires'       => $token->getExpires(),
             'tenant_id'     => $tenantId ?? $this->data('tenant_id')
         ]);
     }

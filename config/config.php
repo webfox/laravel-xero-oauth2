@@ -2,6 +2,8 @@
 
 return [
 
+    'api_host' => 'https://api.xero.com/api.xro/2.0',
+
     'oauth' => [
         /************************************************************************
          * Client ID provided by Xero when registering your application
@@ -28,6 +30,11 @@ return [
             'profile',
             'offline_access',
         ],
+
+        /************************************************************************
+         * Url to redirect to upon success
+         ************************************************************************/
+        'redirect_on_success' => 'xero.auth.success',
 
         /************************************************************************
          * Url for Xero to redirect to upon granting access

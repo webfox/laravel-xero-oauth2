@@ -39,7 +39,7 @@ class AuthorizationCallbackController extends Controller
 
     public function onSuccess()
     {
-        return Redirect::route(config('xero.oauth.on_success'));
+        return Redirect::route(config('xero.oauth.redirect_on_success'));
     }
 
     public function onFailure(\throwable $e)

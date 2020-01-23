@@ -10,7 +10,6 @@ class AuthorizationController extends Controller
 {
     public function __invoke(Redirector $redirect, OauthCredentialManager $oauth)
     {
-
         return $redirect->to($oauth->getAuthorizationUrl());
     }
 
