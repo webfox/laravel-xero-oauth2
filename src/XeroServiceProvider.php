@@ -16,6 +16,8 @@ class XeroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('xero.php'),
