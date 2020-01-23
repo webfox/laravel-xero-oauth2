@@ -1,0 +1,57 @@
+{
+    "name": "webfox/laravel-xero-oauth2",
+    "description": "A Laravel integration for Xero using the Oauth 2.0 spec",
+    "keywords": [
+        "webfox",
+        "laravel-xero-oauth2",
+        "xero",
+        "laravel",
+        "oauth2"
+    ],
+    "homepage": "https://github.com/webfox/laravel-xero-oauth2",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Hailwood",
+            "email": "matthew@webfox.co.nz",
+            "homepage": "https://webfox.co.nz",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.3",
+        "xeroapi/xero-php-oauth2": "^1.0",
+        "laravel/framework": ">5.7<7.0"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.3",
+        "phpunit/phpunit": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webfox\\Xero\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webfox\\Xero\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webfox\\Xero\\XeroServiceProvider"
+            ],
+            "aliases": {
+                "Xero": "Webfox\\Xero\\XeroFacade"
+            }
+        }
+    }
+}
