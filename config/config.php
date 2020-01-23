@@ -30,25 +30,6 @@ return [
         ],
 
         /************************************************************************
-         * What to do if requesting an access token fails options are either
-         * * 'throw' to throw an exception
-         * * a url to redirect to.
-         ************************************************************************/
-        'on_failure'                 => 'throw',
-
-        /************************************************************************
-         * Where to redirect to on successful authorization
-         ************************************************************************/
-        'on_success'                 => route('home'),
-
-        /************************************************************************
-         * Url for Xero to redirect to upon granting access
-         * Unless you wish to change the default behaviour you should not need to
-         * change this
-         ************************************************************************/
-        'redirect_uri'               => route('xero.authenticate'),
-
-        /************************************************************************
          * Urls for Xero's Oauth integration, you shouldn't need to change these
          ************************************************************************/
         'url_authorize'              => 'https://login.xero.com/identity/connect/authorize',
