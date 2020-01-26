@@ -102,6 +102,22 @@ class OauthCredentialManager
         ]);
     }
 
+    public function getUser()
+    {
+        $jwt = new \XeroAPI\XeroPHP\JWTClaims();
+        $jwt->setTokenId($this->data('id_token'));
+        $decodedToken = $jwt->decode();
+
+        return [
+            'given_name'  => $decodedToken->getGivenName(),
+            'family_name' => $decodedToken->getFamilyName(),
+            'email'       => $decodedToken->getEmail(),
+            'user_id'     => $decodedToken->getXeroUserId(),
+            'username'    => $decodedToken->getPreferredUsername(),
+            'session_id'  => $decodedToken->getGlobalSessionId()
+        ];
+    }
+
     protected function data($key = null)
     {
         if (!$this->exists()) {
