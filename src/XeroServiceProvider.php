@@ -2,6 +2,7 @@
 
 namespace Webfox\Xero;
 
+use Illuminate\Http\Request;
 use XeroAPI\XeroPHP\Configuration;
 use XeroAPI\XeroPHP\Api\IdentityApi;
 use GuzzleHttp\Client as GuzzleClient;
@@ -16,7 +17,7 @@ class XeroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/routes.php');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -72,6 +73,15 @@ class XeroServiceProvider extends ServiceProvider
 
         $this->app->singleton(AccountingApi::class, function (Application $app) {
             return new AccountingApi(new GuzzleClient(), $app->make(Configuration::class));
+        });
+
+        $this->app->bind(Webhook::class, function(Application $app) {
+            return new Webhook(
+                $app->make(OauthCredentialManager::class),
+                $app->make(AccountingApi::class),
+                $this->app->make(Request::class)->getContent(),
+                config('xero.oauth.webhook_signing_key')
+            );
         });
     }
 }
