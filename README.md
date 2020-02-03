@@ -28,6 +28,8 @@ XERO_CLIENT_ID=
 XERO_CLIENT_SECRET=
 ```
 
+When setting up the application in Xero ensure your redirect url is https://{your-domain}/xero/auth/callback
+
 ## Using the Package
 
 This package registers two bindings into the service container you'll be interested in:
