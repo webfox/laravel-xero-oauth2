@@ -10,19 +10,13 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 
 class OauthCredentialManager
 {
-    /**
-     * @var Repository
-     */
-    protected Repository $cache;
+    /** @var Repository  */
+    protected $cache;
 
-    /**
-     * @var Oauth2Provider
-     */
+    /** @var Oauth2Provider  */
     protected $oauthProvider;
 
-    /**
-     * @var Store
-     */
+    /** @var Store */
     protected $session;
 
     protected $cacheKey = 'xero_oauth';
