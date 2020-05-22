@@ -185,7 +185,45 @@ class XeroWebhookController extends Controller
 
 }
 ```
+#Create an invoice - example controller:
 
+```php
+use XeroAPI\XeroPHP\Models\Accounting\Invoice;
+use XeroAPI\XeroPHP\Models\Accounting\Invoices;
+use XeroAPI\XeroPHP\Models\Accounting\TaxType;
+use XeroAPI\XeroPHP\Models\Accounting\LineItem;
+use XeroAPI\XeroPHP\Models\Accounting\AccountType;
+use XeroAPI\XeroPHP\Models\Accounting\CurrencyCode;
+
+$invoices = [];
+
+for($i = 0; $i < 10; $i++) {
+
+    $lineItems = [];
+    for($j = 1; $j < 6; $j++) {
+        $lineItem = new LineItem();
+        $lineItem->setQuantity(1);
+        $lineItem->setUnitAmount(100 * $j);
+        $lineItem->setDescription("Line {$j}");
+        $lineItem->setTaxType(TaxType::OUTPUT2);
+        $lineItem->setAccountCode(AccountType::SALES);
+        $lineItems[] = $lineItem;
+    }
+
+    $xeroInvoice = new Invoice();
+    $xeroInvoice->setType(Invoice::TYPE_ACCREC);
+    $xeroInvoice->setContact(/* XERO_CONTACT_UUID */);
+    $xeroInvoice->setReference(/* AN INTERNAL REFERENCE */);
+    $xeroInvoice->setLineItems($lineItems);
+    $xeroInvoice->setCurrencyCode(CurrencyCode::NZD);
+    $xeroInvoice->setDueDate(now()->addDays(14));
+    $invoices[] = $xeroInvoice;
+}
+
+$xero = resolve(\XeroAPI\XeroPHP\Api\AccountingApi::class);
+$xero->updateOrCreateInvoices(new Invoices(['invoices' => $invoices]));
+
+```
 
 ## License
 
