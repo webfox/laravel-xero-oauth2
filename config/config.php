@@ -29,6 +29,7 @@ return [
             'email',
             'profile',
             'offline_access',
+            'accounting.settings',
         ],
 
         /************************************************************************
