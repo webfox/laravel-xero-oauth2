@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/webfox/laravel-xero-oauth2.svg?style=flat-square)](https://packagist.org/packages/webfox/laravel-xero-oauth2)
 [![Total Downloads](https://img.shields.io/packagist/dt/webfox/laravel-xero-oauth2.svg?style=flat-square)](https://packagist.org/packages/webfox/laravel-xero-oauth2)
 
-This package integrates the new reccomended package of [xeroapi/xero-php-oauth2](https://github.com/XeroAPI/xero-php-oauth2) using the Oauth 2.0 spec with
+This package integrates the new recommended package of [xeroapi/xero-php-oauth2](https://github.com/XeroAPI/xero-php-oauth2) using the Oauth 2.0 spec with
 Laravel.
 
 ## Installation
@@ -186,6 +186,15 @@ class XeroWebhookController extends Controller
 }
 ```
 
+## Example calls
+
+This package is simply a bridge so you don't have to deal with the Oauth2 gymnastics in Laravel.
+
+Once you've have an instance of \XeroAPI\XeroPHP\Api\AccountingApi::class you're dealing directly with Xero's api library.
+
+The XeroAPI PHP Oauth2 App repository has this list of examples of implementing calls to the API: e.g. invoice creation etc.
+
+https://github.com/XeroAPI/xero-php-oauth2-app/blob/master/example.php
 
 ## License
 
