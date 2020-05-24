@@ -87,7 +87,7 @@ class OauthCredentialManager
 
     public function store(AccessTokenInterface $token, $tenantId = null)
     {
-        $this->cache->set($this->cacheKey, [
+        $this->cache->forever($this->cacheKey, [
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
             'id_token'      => $token->getValues()['id_token'],
