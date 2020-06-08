@@ -55,7 +55,7 @@ class OauthCredentialManager
 
     public function getAuthorizationUrl()
     {
-        $redirectUrl = $this->oauthProvider->getAuthorizationUrl(['scope' => implode(' ', config('xero.oauth.scopes'))]);
+        $redirectUrl = $this->oauthProvider->getAuthorizationUrl(['scope' => config('xero.oauth.scopes')]);
         $this->session->put($this->cacheKey, $this->oauthProvider->getState());
 
         return $redirectUrl;
