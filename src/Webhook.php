@@ -18,7 +18,7 @@ class Webhook
 
     protected $accountingApi;
 
-    protected OauthCredentialManager $credentialManager;
+    protected $credentialManager;
 
     public function __construct(OauthCredentialManager $credentialManager, AccountingApi $accountingApi, string $payload, string $signingKey)
     {
