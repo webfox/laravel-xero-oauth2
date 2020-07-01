@@ -15,13 +15,6 @@ composer require webfox/laravel-xero-oauth2
 
 The package will automatically register itself.
 
-You can publish the configuration file with:
-```
-php artisan vendor:publish --provider="Webfox\Xero\XeroServiceProvider" --tag="config"
-```
-
-You'll want to set the scopes required for your application in the config file.
-
 You should add your Xero keys to your .env file using the following keys:
 ```
 XERO_CLIENT_ID=
@@ -29,6 +22,18 @@ XERO_CLIENT_SECRET=
 ```
 
 When setting up the application in Xero ensure your redirect url is https://{your-domain}/xero/auth/callback
+
+You can publish the configuration file with:
+```
+php artisan vendor:publish --provider="Webfox\Xero\XeroServiceProvider" --tag="config"
+```
+
+## Scopes
+
+You'll want to set the scopes required for your application in the config file.
+
+The default set of scopes are  `openid`, `email`, `profile`, `offline_access`, and `accounting.settings`.
+You can see all available scopes on [the official Xero documentation](https://developer.xero.com/documentation/oauth2/scopes).
 
 ## Using the Package
 
