@@ -22,10 +22,11 @@ class Webhook
 
     public function __construct(OauthCredentialManager $credentialManager, AccountingApi $accountingApi, string $payload, string $signingKey)
     {
-        $this->accountingApi = $accountingApi;
-        $this->payload    = $payload;
-        $this->signingKey = $signingKey;
-        $this->properties = new Collection(json_decode($payload, true));
+        $this->accountingApi     = $accountingApi;
+        $this->credentialManager = $credentialManager;
+        $this->payload           = $payload;
+        $this->signingKey        = $signingKey;
+        $this->properties        = new Collection(json_decode($payload, true));
 
         // bail if json_decode fails
         if ($this->properties->isEmpty()) {
@@ -40,7 +41,6 @@ class Webhook
         $this->events = new Collection(array_map(function($event) {
             return new WebhookEvent($this->credentialManager, $this->accountingApi, $event);
         }, $this->properties->get('events')));
-        $this->credentialManager = $credentialManager;
     }
 
     public function getSignature()
