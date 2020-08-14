@@ -1,8 +1,16 @@
 <?php
 
+use Webfox\Xero\Oauth2CredentialManagers\FileStore;
+
 return [
 
     'api_host' => 'https://api.xero.com/api.xro/2.0',
+
+    /************************************************************************
+     * Class used to store credentials.
+     * Must implement OauthCredentialManager Interface
+     ************************************************************************/
+    'credential_store' => FileStore::class,
 
     'oauth' => [
         /************************************************************************
@@ -35,7 +43,7 @@ return [
         /************************************************************************
          * Url to redirect to upon success
          ************************************************************************/
-        'redirect_on_success' => 'xero.auth.success',
+        'redirect_on_success'        => 'xero.auth.success',
 
         /************************************************************************
          * Url for Xero to redirect to upon granting access
@@ -43,6 +51,12 @@ return [
          * change this
          ************************************************************************/
         'redirect_uri'               => 'xero.auth.callback',
+
+        /************************************************************************
+         * If the 'redirect_uri' is not a route name, but rather a full url set
+         * this to true and we won't wrap it in `route()`
+         ************************************************************************/
+        'redirect_full_url'          => false,
 
         /************************************************************************
          * Urls for Xero's Oauth integration, you shouldn't need to change these

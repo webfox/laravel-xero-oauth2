@@ -34,28 +34,33 @@ class XeroServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'xero');
 
+        /*
+         * Singleton as this is how the package talks to Xero,
+         * there's no reason for this to need to change
+         */
         $this->app->singleton(Oauth2Provider::class, function (Application $app) {
             return new Oauth2Provider([
                 'clientId'                => config('xero.oauth.client_id'),
                 'clientSecret'            => config('xero.oauth.client_secret'),
-                'redirectUri'             => route(config('xero.oauth.redirect_uri')),
+                'redirectUri'             =>
+                    config('xero.oauth.redirect_full_url')
+                    ?: route(config('xero.oauth.redirect_uri')),
                 'urlAuthorize'            => config('xero.oauth.url_authorize'),
                 'urlAccessToken'          => config('xero.oauth.url_access_token'),
                 'urlResourceOwnerDetails' => config('xero.oauth.url_resource_owner_details'),
             ]);
         });
 
-        $this->app->singleton(Configuration::class, function (Application $app) {
+        $this->app->bind(OauthCredentialManager::class, function(Application  $app) {
+            return $app->make(config('xero.credential_store'));
+        });
+
+        $this->app->bind(Configuration::class, function (Application $app) {
             $credentials = $app->make(OauthCredentialManager::class);
-            $config = Configuration::getDefaultConfiguration();
+            $config = new Configuration();
             $config->setHost(config('xero.api_host'));
 
             if ($credentials->exists()) {
-                //expires
-                //token
-                //refresh_token
-                //tenant_id
-                //id_token
                 if ($credentials->isExpired()) {
                     $credentials->refresh();
                 }
@@ -67,7 +72,7 @@ class XeroServiceProvider extends ServiceProvider
 
         });
 
-        $this->app->singleton(IdentityApi::class, function (Application $app) {
+        $this->app->bind(IdentityApi::class, function (Application $app) {
             return new IdentityApi(new GuzzleClient(), $app->make(Configuration::class));
         });
 

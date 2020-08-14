@@ -51,12 +51,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Webfox\Xero\OauthCredentialManager;
+use Webfox\Xero\CacheStore;
 
 class XeroController extends Controller
 {
 
-    public function index(Request $request, OauthCredentialManager $xeroCredentials)
+    public function index(Request $request, CacheStore $xeroCredentials)
     {
         try {
             // Check if we've got any stored credentials
@@ -122,6 +122,30 @@ class XeroController extends Controller
 Route::get('/manage/xero', [\App\Http\Controllers\XeroController::class, 'index'])->name('xero.auth.success');
 ```
 
+## Credential Storage
+Version 1 of this package stored the credentials in the cache, while this worked for most, some users clear their cache
+on deployment of a new version of their app, this also restricted an app to only one set of credentials per codebase.
+
+Version 2 swaps this out for an interface and provides a default `FileStore` implementation which stores the credentials on
+`/storage/framework/xero.json` you can switch out the credential store (e.g. for your own `UserStore` if you wanted to store 
+the credentials against your user) in one of two ways
+
+1. If it's a simple store and Laravel can automatically resolve your bindings, simply change the `xero.credential_store` config
+key to point to your new implementation.
+2. If it requires more advanced logic (e.g. using the current user to retrieve the credentials) then you can rebind this 
+in your `AppServiceProvider` or a Middleware
+e.g.
+
+```php
+$this->app->bind(OauthCredentialManager::class, function(Application $app) {
+    return new UserStorageProvider(
+        \Auth::user(), // Storage Mechanism 
+        $app->make('session.store'), // Used for storing/retrieving oauth 2 "state" for redirects
+        $app->make(\Webfox\Xero\Oauth2Provider::class) // Used for getting redirect url and refreshing token
+    );
+});
+``` 
+
 ## Using Webhooks
 On your application in the Xero developer portal create a webhook to get your webhook key.
 
@@ -141,7 +165,6 @@ namespace App\Http\Controllers;
 use Webfox\Xero\Webhook;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Webfox\Xero\WebhookEvent;
 use XeroApi\XeroPHP\Models\Accounting\Contact;
 use XeroApi\XeroPHP\Models\Accounting\Invoice;
 

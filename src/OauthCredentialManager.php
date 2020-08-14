@@ -1,124 +1,95 @@
 <?php
 
-
 namespace Webfox\Xero;
 
-
-use Illuminate\Session\Store;
-use Illuminate\Cache\Repository;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
-class OauthCredentialManager
-{
-    /** @var Repository  */
-    protected $cache;
+interface OauthCredentialManager {
 
-    /** @var Oauth2Provider  */
-    protected $oauthProvider;
+    /**
+     * Get the current access token
+     */
+    public function getAccessToken(): string;
 
-    /** @var Store */
-    protected $session;
+    /**
+     * Get the current refresh token
+     */
+    public function getRefreshToken(): string;
 
-    protected $cacheKey = 'xero_oauth';
+    /**
+     * Get the url to redirect the user to authenticate
+     */
+    public function getAuthorizationUrl(): string;
 
-    public function __construct(Repository $cache, Store $session, Oauth2Provider $oauthProvider)
-    {
-        $this->cache         = $cache;
-        $this->oauthProvider = $oauthProvider;
-        $this->session       = $session;
-    }
+    /**
+     * Get the current tenant ID
+     */
+    public function getTenantId(): string;
 
-    public function getAccessToken(): string
-    {
-        return $this->data('token');
-    }
+    /**
+     * Get the time the current access token expires (unix timestamp)
+     */
+    public function getExpires(): int;
 
-    public function getRefreshToken(): string
-    {
-        return $this->data('refresh_token');
-    }
+    /**
+     * Get the current 'state' used to verify callbacks
+     */
+    public function getState(): string;
 
-    public function getTenantId()
-    {
-        return $this->data('tenant_id');
-    }
+    /**
+     * Check whether we have any credentials stored
+     */
+    public function exists(): bool;
 
-    public function getExpires(): int
-    {
-        return $this->data('expires');
-    }
+    /**
+     * Check whether the current access token is expired
+     */
+    public function isExpired(): bool;
 
-    public function getState()
-    {
-        return $this->session->get($this->cacheKey);
-    }
+    /**
+     * Refresh and store the new token
+     */
+    public function refresh(): void;
 
-    public function getAuthorizationUrl()
-    {
-        $redirectUrl = $this->oauthProvider->getAuthorizationUrl(['scope' => config('xero.oauth.scopes')]);
-        $this->session->put($this->cacheKey, $this->oauthProvider->getState());
+    /**
+     * Store the details of the access token
+     *
+     * Should store array [
+     *   'token'         => $token->getToken(),
+     *   'refresh_token' => $token->getRefreshToken(),
+     *   'id_token'      => $token->getValues()['id_token'],
+     *   'expires'       => $token->getExpires(),
+     *   'tenant_id'     => $tenantId ?? $this->getTenantId(),
+     * ]
+     *
+     * @param AccessTokenInterface $token
+     * @param string|null          $tenantId
+     */
+    public function store(AccessTokenInterface $token, string $tenantId = null): void;
 
-        return $redirectUrl;
-    }
+    /**
+     * Get the current authenticated users details according to the id token
+     * @return array [
+     *   'given_name'  => 'string',
+     *   'family_name' => 'string',
+     *   'email'       => 'string',
+     *   'user_id'     => 'string',
+     *   'username'    => 'string',
+     *   'session_id'  => 'string',
+     * ]
+     */
+    public function getUser(): ?array;
 
-    public function getData()
-    {
-        return $this->data();
-    }
+    /**
+     * Get the current data stored via the store method.
+     * @return array [
+     *   'token'         => 'string',
+     *   'refresh_token' => 'string',
+     *   'id_token'      => 'string',
+     *   'expires'       => 000000,
+     *   'tenant_id'     => 'string',
+     * ]
+     */
+    public function getData(): array;
 
-    public function exists()
-    {
-        return $this->cache->has($this->cacheKey);
-    }
-
-    public function isExpired(): bool
-    {
-        return time() >= $this->data('expires');
-    }
-
-    public function refresh()
-    {
-        $newAccessToken = $this->oauthProvider->getAccessToken('refresh_token', [
-            'refresh_token' => $this->getRefreshToken(),
-        ]);
-
-        $this->store($newAccessToken);
-    }
-
-    public function store(AccessTokenInterface $token, $tenantId = null)
-    {
-        $this->cache->forever($this->cacheKey, [
-            'token'         => $token->getToken(),
-            'refresh_token' => $token->getRefreshToken(),
-            'id_token'      => $token->getValues()['id_token'],
-            'expires'       => $token->getExpires(),
-            'tenant_id'     => $tenantId ?? $this->data('tenant_id')
-        ]);
-    }
-
-    public function getUser()
-    {
-        $jwt = new \XeroAPI\XeroPHP\JWTClaims();
-        $jwt->setTokenId($this->data('id_token'));
-        $decodedToken = $jwt->decode();
-
-        return [
-            'given_name'  => $decodedToken->getGivenName(),
-            'family_name' => $decodedToken->getFamilyName(),
-            'email'       => $decodedToken->getEmail(),
-            'user_id'     => $decodedToken->getXeroUserId(),
-            'username'    => $decodedToken->getPreferredUsername(),
-            'session_id'  => $decodedToken->getGlobalSessionId()
-        ];
-    }
-
-    protected function data($key = null)
-    {
-        if (!$this->exists()) {
-            throw new \Exception('Xero oauth credentials are missing');
-        }
-
-        $cacheData = $this->cache->get($this->cacheKey);
-        return empty($key) ? $cacheData : ($cacheData[$key] ?? null);
-    }
 }
