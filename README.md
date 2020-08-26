@@ -51,12 +51,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Webfox\Xero\CacheStore;
+use Webfox\Xero\OauthCredentialManager;
 
 class XeroController extends Controller
 {
 
-    public function index(Request $request, CacheStore $xeroCredentials)
+    public function index(Request $request, OauthCredentialManager $xeroCredentials)
     {
         try {
             // Check if we've got any stored credentials
