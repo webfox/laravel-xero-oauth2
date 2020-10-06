@@ -76,7 +76,7 @@ class XeroServiceProvider extends ServiceProvider
             return new IdentityApi(new GuzzleClient(), $app->make(Configuration::class));
         });
 
-        $this->app->singleton(AccountingApi::class, function (Application $app) {
+        $this->app->bind(AccountingApi::class, function (Application $app) {
             return new AccountingApi(new GuzzleClient(), $app->make(Configuration::class));
         });
 
