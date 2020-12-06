@@ -91,13 +91,17 @@ class FileStore implements OauthCredentialManager
 
     public function store(AccessTokenInterface $token, string $tenantId = null): void
     {
-        $this->files->put($this->filePath, json_encode([
+        $ret = $this->files->put($this->filePath, json_encode([
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
             'id_token'      => $token->getValues()['id_token'],
             'expires'       => $token->getExpires(),
             'tenant_id'     => $tenantId ?? $this->getTenantId()
         ]));
+        
+        if ($ret === false) {
+            throw new \Exception("Failed to write to file: {$this->filePath}");
+        }
     }
 
     public function getUser(): ?array
