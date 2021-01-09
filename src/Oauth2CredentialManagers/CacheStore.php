@@ -128,4 +128,9 @@ class CacheStore implements OauthCredentialManager
         $cacheData = $this->cache->get($this->cacheKey);
         return empty($key) ? $cacheData : ($cacheData[$key] ?? null);
     }
+
+    public function delete(): void
+    {
+        $this->cache->delete($this->cacheKey);
+    }
 }

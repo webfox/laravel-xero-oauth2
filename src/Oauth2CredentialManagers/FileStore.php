@@ -131,4 +131,13 @@ class FileStore implements OauthCredentialManager
 
         return empty($key) ? $cacheData : ($cacheData[$key] ?? null);
     }
+
+    public function delete(): void
+    {
+        $ret = $this->files->delete($this->filePath);
+
+        if ($ret === false) {
+            throw new \Exception("Failed to write to file: {$this->filePath}");
+        }
+    }
 }
