@@ -146,6 +146,8 @@ $this->app->bind(OauthCredentialManager::class, function(Application $app) {
 });
 ``` 
 
+An example UserStorageProvider [can been found here](https://github.com/webfox/laravel-xero-oauth2/issues/45#issuecomment-757552563)
+
 ## Using Webhooks
 On your application in the Xero developer portal create a webhook to get your webhook key.
 
