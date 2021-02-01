@@ -81,6 +81,7 @@ class CacheStore implements OauthCredentialManager
     public function refresh(): void
     {
         $newAccessToken = $this->oauthProvider->getAccessToken('refresh_token', [
+            'grant_type' => 'refresh_token',
             'refresh_token' => $this->getRefreshToken(),
         ]);
 
