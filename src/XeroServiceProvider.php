@@ -52,7 +52,13 @@ class XeroServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(OauthCredentialManager::class, function(Application  $app) {
-            return $app->make(config('xero.credential_store'));
+            $credentials = $app->make(config('xero.credential_store'));
+
+            if ($credentials->exists() && $credentials->isExpired()) {
+                $credentials->refresh();
+            }
+
+            return $credentials;
         });
 
         $this->app->bind(Configuration::class, function (Application $app) {
@@ -61,10 +67,6 @@ class XeroServiceProvider extends ServiceProvider
             $config->setHost(config('xero.api_host'));
 
             if ($credentials->exists()) {
-                if ($credentials->isExpired()) {
-                    $credentials->refresh();
-                }
-
                 $config->setAccessToken($credentials->getAccessToken());
             }
 
