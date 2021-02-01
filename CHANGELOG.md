@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-xero-oauth2` will be documented in this file
 
+## v2.0.6 Release
+- Add grant type to refresh token method https://github.com/XeroAPI/xero-php-oauth2/issues/196
+
 ## v2.0.5 Release
 - Moved the refreshing of the token to the resolution of the CredentialManager.
   This should resolve any issues where the Xero configuration object is never resolve (e.g. not using the AccountingApi class) #48
