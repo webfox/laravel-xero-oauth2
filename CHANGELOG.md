@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-xero-oauth2` will be documented in this file
 
+## v2.0.1 Release
+- Moved the refreshing of the token to the resolution of the CredentialManager.
+  This should resolve any issues where the Xero configuration object is never resolve (e.g. not using the AccountingApi class) #48
+
 ## v2.0.0 Release
 - Make most resolution of credentials a binding instead of a singleton to fix queued jobs #27
 - Switch OauthCredentialProvider to be an interface to allow for custom storage #8
