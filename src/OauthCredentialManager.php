@@ -92,4 +92,8 @@ interface OauthCredentialManager {
      */
     public function getData(): array;
 
+    /**
+     * Delete stored access token
+     */
+    public function delete(): void;
 }
