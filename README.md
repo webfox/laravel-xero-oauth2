@@ -15,13 +15,17 @@ composer require webfox/laravel-xero-oauth2
 
 The package will automatically register itself.
 
-You should add your Xero keys to your .env file using the following keys:
+You should add your Xero keys to your `.env` file using the following keys:
 ```
 XERO_CLIENT_ID=
 XERO_CLIENT_SECRET=
 ```
 
-When setting up the application in Xero ensure your redirect url is https://{your-domain}/xero/auth/callback
+(on [Xero developer portal](https://developer.xero.com/app/manage)): ***IMPORTANT*** When setting up the application in Xero ensure your redirect url is:
+```
+https://{your-domain}/xero/auth/callback
+```
+*(The flow is xero/auth/callback performs the oAuth handshake and stores your token, then redirects you over to your success callback)*
 
 You can publish the configuration file with:
 ```
@@ -151,7 +155,7 @@ An example UserStorageProvider [can been found here](https://github.com/webfox/l
 ## Using Webhooks
 On your application in the Xero developer portal create a webhook to get your webhook key.
 
-You can then add this to your .env file as
+You can then add this to your `.env` file as
 
 ```
 XERO_WEBHOOK_KEY=...
