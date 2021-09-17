@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-xero-oauth2` will be documented in this file
 
+## v2.0.7 Release
+- Resolve redirect_uri being set to true when full url is used #59
+
 ## v2.0.6 Release
 - Add grant type to refresh token method https://github.com/XeroAPI/xero-php-oauth2/issues/196
 
