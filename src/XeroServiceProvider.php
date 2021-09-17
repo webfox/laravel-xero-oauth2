@@ -42,9 +42,9 @@ class XeroServiceProvider extends ServiceProvider
             return new Oauth2Provider([
                 'clientId'                => config('xero.oauth.client_id'),
                 'clientSecret'            => config('xero.oauth.client_secret'),
-                'redirectUri'             =>
-                    config('xero.oauth.redirect_full_url')
-                    ?: route(config('xero.oauth.redirect_uri')),
+                'redirectUri'             => config('xero.oauth.redirect_full_url')
+                    ? config('xero.oauth.redirect_uri')
+                    : route(config('xero.oauth.redirect_uri')),
                 'urlAuthorize'            => config('xero.oauth.url_authorize'),
                 'urlAccessToken'          => config('xero.oauth.url_access_token'),
                 'urlResourceOwnerDetails' => config('xero.oauth.url_resource_owner_details'),
