@@ -127,12 +127,12 @@ Route::get('/manage/xero', [\App\Http\Controllers\XeroController::class, 'index'
 ```
 
 ## Credential Storage
-Version 1 of this package stored the credentials in the cache, while this worked for most, some users clear their cache
-on deployment of a new version of their app, this also restricted an app to only one set of credentials per codebase.
+Credentials are stored in a JSON file using the default disk on the Laravel Filesystem, with visibility set to private. This allows credential sharing across multiple servers using a shared disk such as S3, regardless of which server conducted the OAuth flow.
 
-Version 2 swaps this out for an interface and provides a default `FileStore` implementation which stores the credentials on
-`/storage/framework/xero.json` you can switch out the credential store (e.g. for your own `UserStore` if you wanted to store 
-the credentials against your user) in one of two ways
+To use a different disk, change the `xero.credential_disk` config item to another disk defined in `config/filesystem.php`.
+
+You can switch out the credential store (e.g. for your own `UserStore` if you wanted to store 
+the credentials against your user) in one of two ways:
 
 1. If it's a simple store and Laravel can automatically resolve your bindings, simply change the `xero.credential_store` config
 key to point to your new implementation.

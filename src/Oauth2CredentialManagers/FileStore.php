@@ -4,7 +4,7 @@
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
 
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Session\Store;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Oauth2Provider;
@@ -12,7 +12,7 @@ use Webfox\Xero\OauthCredentialManager;
 
 class FileStore implements OauthCredentialManager
 {
-    /** @var Filesystem  */
+    /** @var FilesystemManager  */
     protected $files;
 
     /** @var Oauth2Provider  */
@@ -24,12 +24,12 @@ class FileStore implements OauthCredentialManager
     /** @var string */
     protected $filePath;
 
-    public function __construct(Filesystem $files, Store $session, Oauth2Provider $oauthProvider)
+    public function __construct(FilesystemManager $files, Store $session, Oauth2Provider $oauthProvider)
     {
         $this->files         = $files;
         $this->oauthProvider = $oauthProvider;
         $this->session       = $session;
-        $this->filePath      = storage_path('framework/xero.json');
+        $this->filePath      = 'xero.json';
     }
 
     public function getAccessToken(): string
@@ -72,7 +72,7 @@ class FileStore implements OauthCredentialManager
 
     public function exists(): bool
     {
-        return $this->files->exists($this->filePath);
+        return $this->files->disk(config('xero.credential_disk'))->exists($this->filePath);
     }
 
     public function isExpired(): bool
@@ -92,14 +92,14 @@ class FileStore implements OauthCredentialManager
 
     public function store(AccessTokenInterface $token, string $tenantId = null): void
     {
-        $ret = $this->files->put($this->filePath, json_encode([
+        $ret = $this->files->disk(config('xero.credential_disk'))->put($this->filePath, json_encode([
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
             'id_token'      => $token->getValues()['id_token'],
             'expires'       => $token->getExpires(),
             'tenant_id'     => $tenantId ?? $this->getTenantId()
-        ]));
-        
+        ]), 'private');
+
         if ($ret === false) {
             throw new \Exception("Failed to write to file: {$this->filePath}");
         }
@@ -132,7 +132,7 @@ class FileStore implements OauthCredentialManager
             throw new \Exception('Xero oauth credentials are missing');
         }
 
-        $cacheData = json_decode($this->files->get($this->filePath), true);
+        $cacheData = json_decode($this->files->disk(config('xero.credential_disk'))->get($this->filePath), true);
 
         return empty($key) ? $cacheData : ($cacheData[$key] ?? null);
     }

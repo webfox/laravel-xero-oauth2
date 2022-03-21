@@ -12,6 +12,11 @@ return [
      ************************************************************************/
     'credential_store' => FileStore::class,
 
+    /************************************************************************
+     * Disk used to store credentials.
+     ************************************************************************/
+    'credential_disk' => env('FILESYSTEM_DRIVER', 'local'),
+
     'oauth' => [
         /************************************************************************
          * Client ID provided by Xero when registering your application
