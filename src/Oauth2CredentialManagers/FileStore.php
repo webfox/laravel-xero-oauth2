@@ -13,7 +13,7 @@ use Webfox\Xero\OauthCredentialManager;
 class FileStore implements OauthCredentialManager
 {
     /** @var FilesystemManager  */
-    protected $files;
+    protected $disk;
 
     /** @var Oauth2Provider  */
     protected $oauthProvider;
@@ -26,7 +26,7 @@ class FileStore implements OauthCredentialManager
 
     public function __construct(FilesystemManager $files, Store $session, Oauth2Provider $oauthProvider)
     {
-        $this->files         = $files;
+        $this->disk          = $files->disk(config('xero.credential_disk', config('filesystems.default')));
         $this->oauthProvider = $oauthProvider;
         $this->session       = $session;
         $this->filePath      = 'xero.json';
@@ -72,7 +72,7 @@ class FileStore implements OauthCredentialManager
 
     public function exists(): bool
     {
-        return $this->files->disk(config('xero.credential_disk'))->exists($this->filePath);
+        return $this->disk->exists($this->filePath);
     }
 
     public function isExpired(): bool
@@ -92,7 +92,7 @@ class FileStore implements OauthCredentialManager
 
     public function store(AccessTokenInterface $token, string $tenantId = null): void
     {
-        $ret = $this->files->disk(config('xero.credential_disk'))->put($this->filePath, json_encode([
+        $ret = $this->disk->put($this->filePath, json_encode([
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
             'id_token'      => $token->getValues()['id_token'],
@@ -132,7 +132,7 @@ class FileStore implements OauthCredentialManager
             throw new \Exception('Xero oauth credentials are missing');
         }
 
-        $cacheData = json_decode($this->files->disk(config('xero.credential_disk'))->get($this->filePath), true);
+        $cacheData = json_decode($this->disk->get($this->filePath), true);
 
         return empty($key) ? $cacheData : ($cacheData[$key] ?? null);
     }
