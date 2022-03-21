@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-xero-oauth2` will be documented in this file
 
+## v3.0.0 Release
+- Change FileStore to use FilesystemManager with disk configuration #67
+- Drop Laravel 5 support
+- Add PHP 8.1 support
+
 ## v2.0.7 Release
 - Resolve redirect_uri being set to true when full url is used #59
 
