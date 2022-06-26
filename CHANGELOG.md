@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-xero-oauth2` will be documented in this file
 
+## v4.0.0 Release
+- Support multiple tenants on one connection #71
+
+> **Note**
+> Unless you are using a custom OauthCredentialStore then this should be an in-place update, however you may be required to
+> wipe and re-enable your credential storage.
+
+
 ## v3.0.0 Release
 - Change FileStore to use FilesystemManager with disk configuration #67
 - Drop Laravel 5 support

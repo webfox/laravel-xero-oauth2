@@ -40,9 +40,18 @@ class CacheStore implements OauthCredentialManager
         return $this->data('refresh_token');
     }
 
-    public function getTenantId(): string
+    public function getTenants(): ?array
     {
-        return $this->data('tenant_id');
+        return $this->data('tenants');
+    } 
+
+    public function getTenantId(int $tenant =0): string
+    {
+        if(!isset($this->data('tenants')[$tenant]))
+        {
+            throw new \Exception("No such tenant exists");
+        }
+        return $this->data('tenants')[$tenant]['Id'];
     }
 
     public function getExpires(): int
@@ -88,14 +97,14 @@ class CacheStore implements OauthCredentialManager
         $this->store($newAccessToken);
     }
 
-    public function store(AccessTokenInterface $token, string $tenantId = null): void
+    public function store(AccessTokenInterface $token, array $tenants = null): void
     {
         $this->cache->forever($this->cacheKey, [
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
             'id_token'      => $token->getValues()['id_token'],
             'expires'       => $token->getExpires(),
-            'tenant_id'     => $tenantId ?? $this->getTenantId()
+            'tenants'       => $tenants ?? $this->getTenants()
         ]);
     }
 

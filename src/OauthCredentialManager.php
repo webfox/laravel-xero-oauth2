@@ -22,9 +22,14 @@ interface OauthCredentialManager {
     public function getAuthorizationUrl(): string;
 
     /**
+     * Get all tenants available
+    **/
+    public function getTenants(): ?array;
+
+    /**
      * Get the current tenant ID
      */
-    public function getTenantId(): string;
+    public function getTenantId(int $tenant =0): string;
 
     /**
      * Get the time the current access token expires (unix timestamp)
@@ -59,13 +64,13 @@ interface OauthCredentialManager {
      *   'refresh_token' => $token->getRefreshToken(),
      *   'id_token'      => $token->getValues()['id_token'],
      *   'expires'       => $token->getExpires(),
-     *   'tenant_id'     => $tenantId ?? $this->getTenantId(),
+     *   'tenants'       => $tenants ?? $this->getTenants(),
      * ]
      *
      * @param AccessTokenInterface $token
-     * @param string|null          $tenantId
+     * @param Array|null          $tenants
      */
-    public function store(AccessTokenInterface $token, string $tenantId = null): void;
+    public function store(AccessTokenInterface $token, array $tenants = null): void;
 
     /**
      * Get the current authenticated users details according to the id token
@@ -87,7 +92,7 @@ interface OauthCredentialManager {
      *   'refresh_token' => 'string',
      *   'id_token'      => 'string',
      *   'expires'       => 000000,
-     *   'tenant_id'     => 'string',
+     *   'tenants'     => 'array',
      * ]
      */
     public function getData(): array;
