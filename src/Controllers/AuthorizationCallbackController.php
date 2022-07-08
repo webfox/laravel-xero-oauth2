@@ -26,9 +26,18 @@ class AuthorizationCallbackController extends Controller
 
             $accessToken = $provider->getAccessToken('authorization_code', $request->only('code'));
             $identity->getConfig()->setAccessToken((string)$accessToken->getToken());
-            $tenantId = $identity->getConnections()[0]->getTenantId();
 
-            $oauth->store($accessToken, $tenantId);
+            //Iterate tenants
+            $tenants = array();
+            foreach($identity->getConnections() as $c) {
+                $tenants[] = [
+                    "Id" => $c->getTenantId(),
+                    "Name"=> $c->getTenantName()
+                ];
+            }
+
+            //Store Token and Tenants
+            $oauth->store($accessToken, $tenants);
             Event::dispatch(new XeroAuthorized($oauth->getData()));
 
             return $this->onSuccess();
