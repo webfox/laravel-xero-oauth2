@@ -18,6 +18,6 @@ class XeroAuthorized
         $this->refresh_token = $data['refresh_token'];
         $this->id_token      = $data['id_token'];
         $this->expires       = $data['expires'];
-        $this->tenant_id     = $data['tenant_id'];
+        $this->tenant_id     = $data['tenant_id'] ?? $data['tenants'][0]['Id'];
     }
 }
