@@ -230,6 +230,10 @@ The XeroAPI PHP Oauth2 App repository has this list of examples of implementing 
 
 https://github.com/XeroAPI/xero-php-oauth2-app/blob/master/example.php
 
+`Note:` Don't forget to add xero.json in .gitignore otherwise from local repose it can go to production server and create problem.
+```
+storage/framework/xero.json
+```
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
