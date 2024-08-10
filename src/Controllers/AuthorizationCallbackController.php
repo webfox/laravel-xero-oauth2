@@ -11,6 +11,8 @@ use Webfox\Xero\Events\XeroAuthorized;
 use Webfox\Xero\OauthCredentialManager;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Str;
+use Webfox\Xero\Exceptions\OAuthException;
 
 class AuthorizationCallbackController extends Controller
 {
@@ -20,19 +22,34 @@ class AuthorizationCallbackController extends Controller
     {
         try {
             $this->validate($request, [
-                'code'  => ['required', 'string'],
+                'error' => ['sometimes', 'required', 'string'],
+                'error_description' => ['required_with:error', 'string'],
+                'code'  => ['required_if:error,null', 'string'],
                 'state' => ['required', 'string', "in:{$oauth->getState()}"]
             ]);
+
+            if ($request->has('error')) {
+                throw new OAuthException(
+                    Str::headline(
+                        sprintf(
+                            '%s: %s',
+                            $request->get('error'),
+                            $request->get('error_description')
+                        )
+                    )
+                );
+            }
 
             $accessToken = $provider->getAccessToken('authorization_code', $request->only('code'));
             $identity->getConfig()->setAccessToken((string)$accessToken->getToken());
 
             //Iterate tenants
             $tenants = array();
-            foreach($identity->getConnections() as $c) {
+            foreach ($identity->getConnections() as $c) {
                 $tenants[] = [
                     "Id" => $c->getTenantId(),
-                    "Name"=> $c->getTenantName()
+                    "Name" => $c->getTenantName(),
+                    "ConnectionId" => $c->getId(),
                 ];
             }
 
@@ -55,5 +72,4 @@ class AuthorizationCallbackController extends Controller
     {
         throw $e;
     }
-
 }

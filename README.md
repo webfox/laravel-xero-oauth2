@@ -9,6 +9,7 @@ Laravel.
 ## Installation
 
 You can install this package via composer using the following command:
+
 ```
 composer require webfox/laravel-xero-oauth2
 ```
@@ -16,18 +17,22 @@ composer require webfox/laravel-xero-oauth2
 The package will automatically register itself.
 
 You should add your Xero keys to your `.env` file using the following keys:
+
 ```
 XERO_CLIENT_ID=
 XERO_CLIENT_SECRET=
 ```
 
 (on [Xero developer portal](https://developer.xero.com/app/manage)): ***IMPORTANT*** When setting up the application in Xero ensure your redirect url is:
+
 ```
 https://{your-domain}/xero/auth/callback
 ```
+
 *(The flow is xero/auth/callback performs the oAuth handshake and stores your token, then redirects you over to your success callback)*
 
 You can publish the configuration file with:
+
 ```
 php artisan vendor:publish --provider="Webfox\Xero\XeroServiceProvider" --tag="config"
 ```
@@ -42,12 +47,14 @@ You can see all available scopes on [the official Xero documentation](https://de
 ## Using the Package
 
 This package registers two bindings into the service container you'll be interested in:
+
 * `\XeroAPI\XeroPHP\Api\AccountingApi::class` this is the main api for Xero - see the [xeroapi/xero-php-oauth2 docs](https://github.com/XeroAPI/xero-php-oauth2/tree/master/docs) for usage.
   When you first resolve this dependency if the stored credentials are expired it will automatically refresh the token.
-* `Webfox\Xero\OauthCredentialManager` this is the credential manager - The Accounting API requires we pass through a tenant ID on each request, this class is how you'd access that. 
+* `Webfox\Xero\OauthCredentialManager` this is the credential manager - The Accounting API requires we pass through a tenant ID on each request, this class is how you'd access that.
   This is also where we can get information about the authenticating user. See below for an example.
 
 *app\Http\Controllers\XeroController.php*
+
 ```php
 <?php
 
@@ -92,6 +99,7 @@ class XeroController extends Controller
 ```
 
 *resources\views\xero.blade.php*
+
 ```
 @extends('_layouts.main')
 
@@ -118,6 +126,7 @@ class XeroController extends Controller
 ```
 
 *routes/web.php*
+
 ```php
 /* 
  * We name this route xero.auth.success as by default the config looks for a route with this name to redirect back to
@@ -126,17 +135,58 @@ class XeroController extends Controller
 Route::get('/manage/xero', [\App\Http\Controllers\XeroController::class, 'index'])->name('xero.auth.success');
 ```
 
+### Error Handling
+
+In the event that a user denies access on the Xero Authorisation page, the package will throw a `OAuthException` from the [AuthorizationCallbackController](src/Controllers/AuthorizationCallbackController.php). This can be caught and acted upon however you prefer.
+
+#### Laravel 11
+
+To do this in Laravel 11, bind a custom exception renderer in `bootstrap/app.php`:
+
+```php
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        //
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        // Handle when the user clicks cancel on the Xero authorization screen
+        $exceptions->render(function (OAuthException $e, Request $request) {
+            return redirect('/my/xero/connect/page')->with('errorMessage', $e->getMessage());
+        });
+    })->create();
+```
+
+#### Laravel 8-10
+
+Use the `reportable` method in the `App\Exceptions\Handler` class:
+
+```php
+    public function register()
+    {
+        $this->reportable(function (OAuthException $e) {
+            // Handle when the user clicks cancel on the Xero authorization screen
+            return redirect('/my/xero/connect/page')->with('errorMessage', $e->getMessage());
+        });
+    }
+```
+
 ## Credential Storage
+
 Credentials are stored in a JSON file using the default disk on the Laravel Filesystem, with visibility set to private. This allows credential sharing across multiple servers using a shared disk such as S3, regardless of which server conducted the OAuth flow.
 
 To use a different disk, change the `xero.credential_disk` config item to another disk defined in `config/filesystem.php`.
 
-You can switch out the credential store (e.g. for your own `UserStore` if you wanted to store 
+You can switch out the credential store (e.g. for your own `UserStore` if you wanted to store
 the credentials against your user) in one of two ways:
 
 1. If it's a simple store and Laravel can automatically resolve your bindings, simply change the `xero.credential_store` config
 key to point to your new implementation.
-2. If it requires more advanced logic (e.g. using the current user to retrieve the credentials) then you can rebind this 
+2. If it requires more advanced logic (e.g. using the current user to retrieve the credentials) then you can rebind this
 in your `AppServiceProvider` or a Middleware
 e.g.
 
@@ -148,11 +198,12 @@ $this->app->bind(OauthCredentialManager::class, function(Application $app) {
         $app->make(\Webfox\Xero\Oauth2Provider::class) // Used for getting redirect url and refreshing token
     );
 });
-``` 
+```
 
 An example UserStorageProvider [can been found here](https://github.com/webfox/laravel-xero-oauth2/issues/45#issuecomment-757552563)
 
 ## Using Webhooks
+
 On your application in the Xero developer portal create a webhook to get your webhook key.
 
 You can then add this to your `.env` file as
@@ -228,7 +279,7 @@ Once you've have an instance of \XeroAPI\XeroPHP\Api\AccountingApi::class you're
 
 The XeroAPI PHP Oauth2 App repository has this list of examples of implementing calls to the API: e.g. invoice creation etc.
 
-https://github.com/XeroAPI/xero-php-oauth2-app/blob/master/example.php
+<https://github.com/XeroAPI/xero-php-oauth2-app/blob/master/example.php>
 
 ## License
 
