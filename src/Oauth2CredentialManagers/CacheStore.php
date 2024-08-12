@@ -12,22 +12,11 @@ use Webfox\Xero\OauthCredentialManager;
 
 class CacheStore implements OauthCredentialManager
 {
-    /** @var Repository  */
-    protected $cache;
+    protected string $cacheKey = 'xero_oauth';
 
-    /** @var Oauth2Provider  */
-    protected $oauthProvider;
-
-    /** @var Store */
-    protected $session;
-
-    protected $cacheKey = 'xero_oauth';
-
-    public function __construct(Repository $cache, Store $session, Oauth2Provider $oauthProvider)
+    public function __construct(protected Repository $cache, protected Store $session, protected Oauth2Provider $oauthProvider)
     {
-        $this->cache         = $cache;
-        $this->oauthProvider = $oauthProvider;
-        $this->session       = $session;
+
     }
 
     public function getAccessToken(): string
