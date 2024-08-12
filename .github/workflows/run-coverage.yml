@@ -1,4 +1,4 @@
-name: run-tests
+name: run-coverage
 
 on:
   - push
@@ -24,7 +24,7 @@ jobs:
           php-version: 8.2
 
       - name: Install dependencies
-        run: composer update prefer-stable --prefer-dist --no-interaction --no-suggest
+        run: composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute tests
         run: vendor/bin/phpunit --log-junit junit.xml
