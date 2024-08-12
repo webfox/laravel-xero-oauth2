@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: run-coverage
+=======
+name: run-tests
+>>>>>>> 90b94b5 (split out ci files)
 
 on:
   - push
