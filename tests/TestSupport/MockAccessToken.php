@@ -2,9 +2,10 @@
 
 namespace Tests\Webfox\Xero\TestSupport;
 
+use Illuminate\Contracts\Support\Arrayable;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
-class MockAccessToken implements AccessTokenInterface
+class MockAccessToken implements AccessTokenInterface, Arrayable
 {
     private string $token = 'token';
 
@@ -41,6 +42,16 @@ class MockAccessToken implements AccessTokenInterface
             'id_token' => [
                 'token' => 'foo',
             ],
+        ];
+    }
+
+    public function toArray()
+    {
+        return [
+            'token'         => $this->getToken(),
+            'refresh_token' => $this->getRefreshToken(),
+            'id_token'      => $this->getValues()['id_token'],
+            'expires'       => $this->getExpires(),
         ];
     }
 

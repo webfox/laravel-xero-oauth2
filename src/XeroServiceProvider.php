@@ -2,8 +2,9 @@
 
 namespace Webfox\Xero;
 
-use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Request;
+use Webfox\Xero\Clients\AccountAPIClient;
+use Webfox\Xero\Clients\IdentityAPIClient;
 use XeroAPI\XeroPHP\Configuration;
 use XeroAPI\XeroPHP\Api\IdentityApi;
 use GuzzleHttp\Client as GuzzleClient;
@@ -76,11 +77,11 @@ class XeroServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(IdentityApi::class, function (Application $app) {
-            return new IdentityApi($app->make(GuzzleClient::class), $app->make(Configuration::class));
+            return new IdentityApi(IdentityAPIClient::getHttpClient(), $app->make(Configuration::class));
         });
 
         $this->app->bind(AccountingApi::class, function (Application $app) {
-            return new AccountingApi($app->make(GuzzleClient::class), $app->make(Configuration::class));
+            return new AccountingApi(AccountAPIClient::getHttpClient(), $app->make(Configuration::class));
         });
 
         $this->app->bind(Webhook::class, function(Application $app) {

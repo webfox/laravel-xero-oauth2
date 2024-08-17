@@ -25,5 +25,6 @@
     <env name="XERO_CLIENT_ID" value="demo-client-id" />
     <env name="XERO_CLIENT_SECRET" value="demo-client-secret" />
     <env name="XERO_WEBHOOK_KEY" value="webhook-key" />
+    <env name="XERO_WEBHOOK_KEY" value="webhook-key" />
   </php>
 </phpunit>

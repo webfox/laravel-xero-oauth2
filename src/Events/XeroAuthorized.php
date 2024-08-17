@@ -6,9 +6,9 @@ class XeroAuthorized
 {
     public string $token;
     public string $refresh_token;
-    public string $id_token;
+    public array $id_token;
     public string $expires;
-    public string $tenants;
+    public array $tenants;
 
     public function __construct(public array $data)
     {
