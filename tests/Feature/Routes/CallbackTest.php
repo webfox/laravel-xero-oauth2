@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Mockery\MockInterface;
 use Tests\Webfox\Xero\TestCase;
-use Tests\Webfox\Xero\TestSupport\MockAccessToken;
+use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
+use Tests\Webfox\Xero\TestSupport\XeroOAuth;
 use Webfox\Xero\Clients\IdentityAPIClient;
 use Webfox\Xero\Events\XeroAuthorized;
 use Webfox\Xero\Exceptions\OAuthException;
 use Webfox\Xero\Oauth2Provider;
-use Webfox\Xero\XeroOAuth;
 
 class CallbackTest extends TestCase
 {

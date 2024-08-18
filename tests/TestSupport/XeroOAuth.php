@@ -1,6 +1,6 @@
 <?php
 
-namespace Webfox\Xero;
+namespace Tests\Webfox\Xero\TestSupport;
 
 use Illuminate\Support\Facades\Config;
 use Webfox\Xero\Clients\AccountAPIClient;

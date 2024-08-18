@@ -9,9 +9,7 @@ use XeroAPI\XeroPHP\Api\AccountingApi;
 
 class WebhookEvent
 {
-
-    /** @var Collection  */
-    protected $properties;
+    protected Collection $properties;
 
     public function __construct(protected OauthCredentialManager $credentialManager, protected AccountingApi $accountingApi, protected array $event)
     {

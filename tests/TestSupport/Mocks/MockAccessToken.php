@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Webfox\Xero\TestSupport;
+namespace Tests\Webfox\Xero\TestSupport\Mocks;
 
 use Illuminate\Contracts\Support\Arrayable;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Tests\Webfox\Xero\TestSupport\ReturnTypeWillChange;
 
 class MockAccessToken implements AccessTokenInterface, Arrayable
 {

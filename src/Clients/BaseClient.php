@@ -4,7 +4,6 @@ namespace Webfox\Xero\Clients;
 
 use GuzzleHttp\Client;
 use Mockery;
-use Mockery\Mock;
 
 abstract class BaseClient
 {

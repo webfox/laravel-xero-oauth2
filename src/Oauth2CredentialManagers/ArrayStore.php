@@ -2,7 +2,6 @@
 
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
-use Illuminate\Cache\Repository;
 use Illuminate\Session\Store;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Oauth2Provider;
@@ -10,10 +9,9 @@ use Webfox\Xero\OauthCredentialManager;
 
 class ArrayStore implements OauthCredentialManager
 {
-    protected ?array $dataStorage = null;
+    public ?array $dataStorage = null;
 
-
-    public function __construct(protected Repository $cache, protected Store $session, protected Oauth2Provider $oauthProvider)
+    public function __construct(protected Store $session, protected Oauth2Provider $oauthProvider)
     {
 
     }
@@ -49,7 +47,7 @@ class ArrayStore implements OauthCredentialManager
 
     public function getState(): string
     {
-        return $this->session->get('xero_oauth2_state');
+        return $this->session->get('xero_oauth2_state') ?? '';
     }
 
     public function getAuthorizationUrl(): string
