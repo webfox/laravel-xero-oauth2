@@ -17,12 +17,12 @@ class ArrayStoreTest extends TestCase
     {
         $sut = new ArrayStore(app(Store::class), app(Oauth2Provider::class));
 
-        $this->assertThrows(fn() => $sut->getAccessToken(), fn(Exception $e) => ('Xero oauth credentials are missing'));
-        $this->assertThrows(fn() => $sut->getRefreshToken(), fn(Exception $e) => ('Xero oauth credentials are missing'));
-        $this->assertThrows(fn() => $sut->getTenants(), fn(Exception $e) => ('Xero oauth credentials are missing'));
-        $this->assertThrows(fn() => $sut->getTenantId(), fn(Exception $e) => ('No such tenant exists'));
-        $this->assertThrows(fn() => $sut->getExpires(), fn(Exception $e) => ('Xero oauth credentials are missing'));
-        $this->assertThrows(fn() => $sut->getData(), fn(Exception $e) => ('Xero oauth credentials are missing'));
+        $this->assertThrows(fn() => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn() => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn() => $sut->getTenants(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn() => $sut->getTenantId(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn() => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn() => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
         $this->assertThrows(fn() => $sut->isExpired(), fn(Exception $e) => ('Xero oauth credentials are missing'));
     }
