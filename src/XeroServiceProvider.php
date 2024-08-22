@@ -3,6 +3,8 @@
 namespace Webfox\Xero;
 
 use Illuminate\Http\Request;
+use Webfox\Xero\Clients\AccountAPIClient;
+use Webfox\Xero\Clients\IdentityAPIClient;
 use XeroAPI\XeroPHP\Configuration;
 use XeroAPI\XeroPHP\Api\IdentityApi;
 use GuzzleHttp\Client as GuzzleClient;
@@ -15,9 +17,9 @@ class XeroServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -30,7 +32,7 @@ class XeroServiceProvider extends ServiceProvider
     /**
      * Register the application services.
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'xero');
 
@@ -51,7 +53,7 @@ class XeroServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->app->bind(OauthCredentialManager::class, function(Application  $app) {
+        $this->app->bind(OauthCredentialManager::class, function(Application $app) {
             $credentials = $app->make(config('xero.credential_store'));
 
             if ($credentials->exists() && $credentials->isExpired()) {
@@ -75,11 +77,11 @@ class XeroServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(IdentityApi::class, function (Application $app) {
-            return new IdentityApi(new GuzzleClient(), $app->make(Configuration::class));
+            return new IdentityApi(IdentityAPIClient::getHttpClient(), $app->make(Configuration::class));
         });
 
         $this->app->bind(AccountingApi::class, function (Application $app) {
-            return new AccountingApi(new GuzzleClient(), $app->make(Configuration::class));
+            return new AccountingApi(AccountAPIClient::getHttpClient(), $app->make(Configuration::class));
         });
 
         $this->app->bind(Webhook::class, function(Application $app) {

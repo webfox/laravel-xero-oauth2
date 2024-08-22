@@ -9,25 +9,15 @@ use XeroAPI\XeroPHP\Api\AccountingApi;
 
 class WebhookEvent
 {
+    protected Collection $properties;
 
-    /** @var Collection  */
-    protected $properties;
-
-    /** @var AccountingApi  */
-    protected $accountingApi;
-
-    /** @var OauthCredentialManager  */
-    protected $credentialManager;
-
-    public function __construct(OauthCredentialManager $credentialManager, AccountingApi $accountingApi, $event)
+    public function __construct(protected OauthCredentialManager $credentialManager, protected AccountingApi $accountingApi, protected array $event)
     {
-        $this->accountingApi = $accountingApi;
         $this->properties = new Collection($event);
 
         if (!$this->properties->has(['resourceUrl', 'resourceId', 'eventDateUtc', 'eventType', 'eventCategory', 'tenantId', 'tenantType',])) {
             throw new \Exception("The event payload was malformed; missing required field");
         }
-        $this->credentialManager = $credentialManager;
     }
 
     public function getResourceUrl()

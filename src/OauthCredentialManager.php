@@ -29,7 +29,7 @@ interface OauthCredentialManager {
     /**
      * Get the current tenant ID
      */
-    public function getTenantId(int $tenant =0): string;
+    public function getTenantId(int $tenant = 0): string;
 
     /**
      * Get the time the current access token expires (unix timestamp)

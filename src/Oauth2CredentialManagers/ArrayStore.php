@@ -1,20 +1,17 @@
 <?php
 
-
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
-
 use Illuminate\Session\Store;
-use Illuminate\Cache\Repository;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
 
-class CacheStore implements OauthCredentialManager
+class ArrayStore implements OauthCredentialManager
 {
-    protected string $cacheKey = 'xero_oauth';
+    public ?array $dataStorage = null;
 
-    public function __construct(protected Repository $cache, protected Store $session, protected Oauth2Provider $oauthProvider)
+    public function __construct(protected Store $session, protected Oauth2Provider $oauthProvider)
     {
 
     }
@@ -32,7 +29,7 @@ class CacheStore implements OauthCredentialManager
     public function getTenants(): ?array
     {
         return $this->data('tenants');
-    } 
+    }
 
     public function getTenantId(int $tenant =0): string
     {
@@ -50,13 +47,13 @@ class CacheStore implements OauthCredentialManager
 
     public function getState(): string
     {
-        return $this->session->get($this->cacheKey);
+        return $this->session->get('xero_oauth2_state') ?? '';
     }
 
     public function getAuthorizationUrl(): string
     {
         $redirectUrl = $this->oauthProvider->getAuthorizationUrl(['scope' => config('xero.oauth.scopes')]);
-        $this->session->put($this->cacheKey, $this->oauthProvider->getState());
+        $this->session->put('xero_oauth2_state', $this->oauthProvider->getState());
 
         return $redirectUrl;
     }
@@ -68,7 +65,7 @@ class CacheStore implements OauthCredentialManager
 
     public function exists(): bool
     {
-        return $this->cache->has($this->cacheKey);
+        return $this->dataStorage !== null;
     }
 
     public function isExpired(): bool
@@ -88,13 +85,13 @@ class CacheStore implements OauthCredentialManager
 
     public function store(AccessTokenInterface $token, array $tenants = null): void
     {
-        $this->cache->forever($this->cacheKey, [
+        $this->dataStorage = [
             'token'         => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
             'id_token'      => $token->getValues()['id_token'],
             'expires'       => $token->getExpires(),
             'tenants'       => $tenants ?? $this->getTenants()
-        ]);
+        ];
     }
 
     public function getUser(): ?array
@@ -124,7 +121,6 @@ class CacheStore implements OauthCredentialManager
             throw new \Exception('Xero oauth credentials are missing');
         }
 
-        $cacheData = $this->cache->get($this->cacheKey);
-        return empty($key) ? $cacheData : ($cacheData[$key] ?? null);
+        return $key === null ? $this->dataStorage : $this->dataStorage[$key] ?? null;
     }
 }
