@@ -20,4 +20,11 @@
       <directory suffix=".php">src/</directory>
     </include>
   </source>
+  <php>
+    <env name="XERO_CREDENTIAL_DISK" value="local" />
+    <env name="XERO_CLIENT_ID" value="demo-client-id" />
+    <env name="XERO_CLIENT_SECRET" value="demo-client-secret" />
+    <env name="XERO_WEBHOOK_KEY" value="webhook-key" />
+    <env name="XERO_WEBHOOK_KEY" value="webhook-key" />
+  </php>
 </phpunit>

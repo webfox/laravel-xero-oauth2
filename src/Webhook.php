@@ -7,25 +7,12 @@ use XeroAPI\XeroPHP\Api\AccountingApi;
 
 class Webhook
 {
+    protected Collection $properties;
 
-    protected $signingKey;
+    protected Collection $events;
 
-    protected $payload;
-
-    protected $properties;
-
-    protected $events;
-
-    protected $accountingApi;
-
-    protected $credentialManager;
-
-    public function __construct(OauthCredentialManager $credentialManager, AccountingApi $accountingApi, string $payload, string $signingKey)
+    public function __construct(protected OauthCredentialManager $credentialManager, protected  AccountingApi $accountingApi, protected string $payload, protected string $signingKey)
     {
-        $this->accountingApi     = $accountingApi;
-        $this->credentialManager = $credentialManager;
-        $this->payload           = $payload;
-        $this->signingKey        = $signingKey;
         $this->properties        = new Collection(json_decode($payload, true));
 
         // bail if json_decode fails
@@ -53,18 +40,12 @@ class Webhook
         return hash_equals($this->getSignature(), $signature);
     }
 
-    /**
-     * @return int
-     */
-    public function getFirstEventSequence()
+    public function getFirstEventSequence(): int
     {
         return $this->properties->get('firstEventSequence');
     }
 
-    /**
-     * @return int
-     */
-    public function getLastEventSequence()
+    public function getLastEventSequence(): int
     {
         return $this->properties->get('lastEventSequence');
     }
@@ -72,7 +53,7 @@ class Webhook
     /**
      * @return \Webfox\Xero\WebhookEvent[]|\Illuminate\Support\Collection
      */
-    public function getEvents()
+    public function getEvents(): Collection|array
     {
         return $this->events;
     }

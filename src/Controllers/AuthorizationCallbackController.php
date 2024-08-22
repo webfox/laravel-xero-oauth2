@@ -45,6 +45,7 @@ class AuthorizationCallbackController extends Controller
 
             //Iterate tenants
             $tenants = array();
+
             foreach ($identity->getConnections() as $c) {
                 $tenants[] = [
                     "Id" => $c->getTenantId(),
@@ -55,6 +56,7 @@ class AuthorizationCallbackController extends Controller
 
             //Store Token and Tenants
             $oauth->store($accessToken, $tenants);
+
             Event::dispatch(new XeroAuthorized($oauth->getData()));
 
             return $this->onSuccess();

@@ -15,20 +15,12 @@ class FileStore implements OauthCredentialManager
     /** @var FilesystemManager  */
     protected $disk;
 
-    /** @var Oauth2Provider  */
-    protected $oauthProvider;
-
-    /** @var Store */
-    protected $session;
-
     /** @var string */
-    protected $filePath;
+    protected string $filePath;
 
-    public function __construct(FilesystemManager $files, Store $session, Oauth2Provider $oauthProvider)
+    public function __construct(protected FilesystemManager $files, protected Store $session, protected Oauth2Provider $oauthProvider)
     {
         $this->disk          = $files->disk(config('xero.credential_disk', config('filesystems.default')));
-        $this->oauthProvider = $oauthProvider;
-        $this->session       = $session;
         $this->filePath      = 'xero.json';
     }
 

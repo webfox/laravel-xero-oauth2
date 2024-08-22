@@ -4,15 +4,13 @@ namespace Webfox\Xero\Events;
 
 class XeroAuthorized
 {
+    public string $token;
+    public string $refresh_token;
+    public array $id_token;
+    public string $expires;
+    public array $tenants;
 
-    public $data;
-    public $token;
-    public $refresh_token;
-    public $id_token;
-    public $expires;
-    public $tenant_id;
-
-    public function __construct($data)
+    public function __construct(public array $data)
     {
         $this->token         = $data['token'];
         $this->refresh_token = $data['refresh_token'];
