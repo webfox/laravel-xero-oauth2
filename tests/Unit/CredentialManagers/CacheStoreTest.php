@@ -25,7 +25,7 @@ class CacheStoreTest extends TestCase
         $this->assertThrows(fn() => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertThrows(fn() => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
-        $this->assertThrows(fn() => $sut->isExpired(), fn(Exception $e) => ('Xero oauth credentials are missing'));
+        $this->assertThrows(fn() => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
     }
 
     public function test_you_can_get_array_store_with_existing_data()
