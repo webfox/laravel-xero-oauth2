@@ -11,7 +11,7 @@ class Webhook
 
     protected Collection $events;
 
-    public function __construct(protected OauthCredentialManager $credentialManager, protected  AccountingApi $accountingApi, protected string $payload, protected string $signingKey)
+    public function __construct(protected OauthCredentialManager $credentialManager, protected AccountingApi $accountingApi, protected string $payload, protected string $signingKey)
     {
         $this->properties        = new Collection(json_decode($payload, true));
 
