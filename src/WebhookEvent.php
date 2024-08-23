@@ -3,9 +3,10 @@
 
 namespace Webfox\Xero;
 
-
 use Illuminate\Support\Collection;
 use XeroAPI\XeroPHP\Api\AccountingApi;
+use XeroAPI\XeroPHP\Models\Accounting\Contact;
+use XeroAPI\XeroPHP\Models\Accounting\Invoice;
 
 class WebhookEvent
 {
@@ -15,7 +16,7 @@ class WebhookEvent
     {
         $this->properties = new Collection($event);
 
-        if (!$this->properties->has(['resourceUrl', 'resourceId', 'eventDateUtc', 'eventType', 'eventCategory', 'tenantId', 'tenantType',])) {
+        if (!$this->properties->has(['resourceUrl', 'resourceId', 'eventDateUtc', 'eventType', 'eventCategory', 'tenantId', 'tenantType'])) {
             throw new \Exception("The event payload was malformed; missing required field");
         }
     }
@@ -50,15 +51,17 @@ class WebhookEvent
         return $this->properties->get('eventCategory');
     }
 
-    public function getEventClass()
+    public function getEventClass(): ?string
     {
         if ($this->getEventCategory() === 'INVOICE') {
-            return \XeroApi\XeroPHP\Models\Accounting\Invoice::class;
-        }
-        if ($this->getEventCategory() === 'CONTACT') {
-            return \XeroApi\XeroPHP\Models\Accounting\Contact::class;
+            return Invoice::class;
         }
 
+        if ($this->getEventCategory() === 'CONTACT') {
+            return Contact::class;
+        }
+
+        return null;
     }
 
     public function getTenantId()
