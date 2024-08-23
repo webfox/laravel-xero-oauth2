@@ -3,16 +3,13 @@
 namespace Tests\Webfox\Xero;
 
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Webfox\Xero\XeroServiceProvider;
 
 class TestCase extends Orchestra
 {
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
-        Http::preventStrayRequests();
-
         config()->set('app.key', 'base64:dW5venZpb3V2eDRkbHJjaHV3dDR5aW9mcnFpNzFrOTA=');
 
         $this->initializeDirectory($this->getTempDirectory());
@@ -26,7 +23,7 @@ class TestCase extends Orchestra
         $app->bind('path.public', fn () => $this->getTempDirectory());
     }
 
-    protected function initializeDirectory($directory)
+    protected function initializeDirectory($directory): void
     {
         if (File::isDirectory($directory)) {
             File::deleteDirectory($directory);
