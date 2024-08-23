@@ -96,7 +96,6 @@ class ArrayStore implements OauthCredentialManager
 
     public function getUser(): ?array
     {
-
         try {
             $jwt = new \XeroAPI\XeroPHP\JWTClaims();
             $jwt->setTokenId($this->data('id_token'));

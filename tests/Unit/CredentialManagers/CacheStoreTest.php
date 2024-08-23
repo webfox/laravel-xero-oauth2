@@ -26,6 +26,7 @@ class CacheStoreTest extends TestCase
         $this->assertThrows(fn() => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
         $this->assertThrows(fn() => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertNull($sut->getUser());
     }
 
     public function test_you_can_get_array_store_with_existing_data()
@@ -64,6 +65,7 @@ class CacheStoreTest extends TestCase
         $this->assertEquals($cacheData, $sut->getData());
         $this->assertTrue($sut->exists());
         $this->assertFalse($sut->isExpired());
+        $this->assertNull($sut->getUser());
     }
 
     public function test_that_authorization_sets_state_correctly()
@@ -132,5 +134,25 @@ class CacheStoreTest extends TestCase
             'expires' => '1234',
             'tenants' => null,
         ], $sut->getData());
+    }
+
+    public function test_you_can_get_user()
+    {
+        $cache = app(Repository::class);
+        $cache->put('xero_oauth', [
+            'id_token' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnaXZlbl9uYW1lIjoiSmFtZXMgRnJlZW1hbiIsImZhbWlseV9uYW1lIjoiRnJlZW1hbiIsImVtYWlsIjoiZm9vQHRlc3QudGVzdCIsInVzZXJfaWQiOjEyMzQ1Njc4OSwidXNlcm5hbWUiOiJKYW1lc0ZyZWVtYW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJKYW1lc0ZyZWVtYW4iLCJzZXNzaW9uX2lkIjoic2Vzc2lvbklkIiwic3ViIjoiMTIzNDU2Nzg5MCIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoiIiwiYXV0aF90aW1lIjoiIiwiaXNzIjoiIiwiYXRfaGFzaCI6IiIsInNpZCI6IiIsImdsb2JhbF9zZXNzaW9uX2lkIjoiIiwieGVyb191c2VyaWQiOiIifQ.IcXMCuIOjgN-C-mJF2GXxsOhThc3_JOBFFi1m5e7LLg',
+            'access_token' => 'james-secret-key',
+        ]);
+
+        $sut = new CacheStore($cache, app(Store::class), app(Oauth2Provider::class));
+
+        $this->assertEquals([
+            "given_name" => "James Freeman",
+            "family_name" => "Freeman",
+            "email" => "foo@test.test",
+            "user_id" => "",
+            "username" => "JamesFreeman",
+            "session_id" => "",
+        ], $sut->getUser());
     }
 }
