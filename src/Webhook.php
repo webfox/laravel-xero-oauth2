@@ -30,12 +30,12 @@ class Webhook
         }, $this->properties->get('events')));
     }
 
-    public function getSignature()
+    public function getSignature(): string
     {
         return base64_encode(hash_hmac('sha256', $this->payload, $this->signingKey, true));
     }
 
-    public function validate($signature)
+    public function validate($signature): bool
     {
         return hash_equals($this->getSignature(), $signature);
     }
