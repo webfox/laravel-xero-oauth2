@@ -7,7 +7,7 @@ use Mockery;
 
 abstract class BaseClient
 {
-    public static Client $httpClient;
+    public static ?Client $httpClient = null;
 
     public static function fake(): void
     {
