@@ -14,7 +14,7 @@ use Webfox\Xero\Oauth2Provider;
 
 class CacheStoreTest extends TestCase
 {
-    public function test_you_can_get_array_store_without_existing_data()
+    public function test_you_can_get_cache_store_without_existing_data()
     {
         $sut = new CacheStore(app(Repository::class), app(Store::class), app(Oauth2Provider::class));
 
@@ -29,7 +29,7 @@ class CacheStoreTest extends TestCase
         $this->assertNull($sut->getUser());
     }
 
-    public function test_you_can_get_array_store_with_existing_data()
+    public function test_you_can_get_cache_store_with_existing_data()
     {
         $cache = app(Repository::class);
         $cacheData = [

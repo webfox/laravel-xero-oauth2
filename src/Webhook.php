@@ -35,7 +35,7 @@ class Webhook
         return base64_encode(hash_hmac('sha256', $this->payload, $this->signingKey, true));
     }
 
-    public function validate($signature): bool
+    public function validate(string $signature): bool
     {
         return hash_equals($this->getSignature(), $signature);
     }
@@ -51,9 +51,9 @@ class Webhook
     }
 
     /**
-     * @return \Webfox\Xero\WebhookEvent[]|\Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection<\Webfox\Xero\WebhookEvent>
      */
-    public function getEvents(): Collection|array
+    public function getEvents(): Collection
     {
         return $this->events;
     }
