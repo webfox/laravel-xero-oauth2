@@ -76,7 +76,7 @@ class CallbackTest extends TestCase
         });
     }
 
-    public function test_if_state_does_match_it_will_error()
+    public function test_if_state_does_not_match_it_will_error()
     {
         Event::fake();
         XeroOAuth::fake();

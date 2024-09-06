@@ -16,7 +16,7 @@ use Webfox\Xero\Oauth2Provider;
 
 class FileStoreTest extends TestCase
 {
-    public function test_you_can_get_array_store_without_existing_data()
+    public function test_you_can_get_file_store_without_existing_data()
     {
         Storage::fake();
 
@@ -33,7 +33,7 @@ class FileStoreTest extends TestCase
         $this->assertNull($sut->getUser());
     }
 
-    public function test_you_can_get_array_store_with_existing_data()
+    public function test_you_can_get_file_store_with_existing_data()
     {
         Storage::fake();
 

@@ -126,7 +126,7 @@ class FileStore implements OauthCredentialManager
         }
     }
 
-    protected function data($key = null)
+    protected function data(string $key = null)
     {
         if (!$this->exists()) {
             throw new \Exception('Xero oauth credentials are missing');

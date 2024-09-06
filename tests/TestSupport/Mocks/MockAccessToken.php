@@ -64,6 +64,6 @@ class MockAccessToken implements AccessTokenInterface, Arrayable
     #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return json_encode($this->toArray());
     }
 }
