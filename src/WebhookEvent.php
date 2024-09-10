@@ -77,12 +77,12 @@ class WebhookEvent
     {
         if ($this->getEventCategory() === 'INVOICE') {
             return $this->accountingApi
-                ->getInvoice($this->credentialManager->getTenantId(), $this->getResourceId())
+                ->getInvoice($this->getTenantId(), $this->getResourceId())
                 ->getInvoices()[0];
         }
         if ($this->getEventCategory() === 'CONTACT') {
             return $this->accountingApi
-                ->getContact($this->credentialManager->getTenantId(), $this->getResourceId())
+                ->getContact($this->getTenantId(), $this->getResourceId())
                 ->getContacts()[0];
         }
     }
