@@ -18,14 +18,14 @@ class CacheStoreTest extends TestCase
     {
         $sut = new CacheStore(app(Repository::class), app(Store::class), app(Oauth2Provider::class));
 
-        $this->assertThrows(fn() => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getTenants(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getTenantId(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenants(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenantId(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
-        $this->assertThrows(fn() => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertNull($sut->getUser());
     }
 
@@ -36,15 +36,15 @@ class CacheStoreTest extends TestCase
             'token' => 'default-token',
             'refresh_token' => 'default-refresh-token',
             'id_token' => [
-                'token' => 'foo'
+                'token' => 'foo',
             ],
             'expires' => $expires = strtotime('+1 hour'),
             'tenants' => [
                 [
                     'Id' => '123',
                     'tenant' => 'tenant_id',
-                    'expires' => 3600
-                ]
+                    'expires' => 3600,
+                ],
             ],
         ];
 
@@ -57,8 +57,8 @@ class CacheStoreTest extends TestCase
             [
                 'Id' => '123',
                 'tenant' => 'tenant_id',
-                'expires' => 3600
-            ]
+                'expires' => 3600,
+            ],
         ], $sut->getTenants());
         $this->assertEquals('123', $sut->getTenantId());
         $this->assertEquals($expires, $sut->getExpires());
@@ -96,12 +96,12 @@ class CacheStoreTest extends TestCase
             'token' => 'token',
             'refresh_token' => 'refresh-token',
             'id_token' => [
-                'token' => 'foo'
+                'token' => 'foo',
             ],
             'expires' => '1234',
             'tenants' => [
                 'tenant' => 'tenant_id',
-                'expires' => 3600
+                'expires' => 3600,
             ],
         ], $sut->getData());
     }
@@ -129,7 +129,7 @@ class CacheStoreTest extends TestCase
             'token' => 'token',
             'refresh_token' => 'refresh-token',
             'id_token' => [
-                'token' => 'foo'
+                'token' => 'foo',
             ],
             'expires' => '1234',
             'tenants' => null,
@@ -147,12 +147,12 @@ class CacheStoreTest extends TestCase
         $sut = new CacheStore($cache, app(Store::class), app(Oauth2Provider::class));
 
         $this->assertEquals([
-            "given_name" => "James Freeman",
-            "family_name" => "Freeman",
-            "email" => "foo@test.test",
-            "user_id" => "",
-            "username" => "JamesFreeman",
-            "session_id" => "",
+            'given_name' => 'James Freeman',
+            'family_name' => 'Freeman',
+            'email' => 'foo@test.test',
+            'user_id' => '',
+            'username' => 'JamesFreeman',
+            'session_id' => '',
         ], $sut->getUser());
     }
 }

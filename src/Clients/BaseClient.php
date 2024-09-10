@@ -16,7 +16,7 @@ abstract class BaseClient
 
     public static function getHttpClient(): Client|Mockery
     {
-        if(self::$httpClient){
+        if (self::$httpClient) {
             return self::$httpClient;
         }
 

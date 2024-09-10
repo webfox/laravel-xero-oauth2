@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Webfox\Xero\Oauth2CredentialManagers;
-
 
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Session\Store;
@@ -12,7 +10,7 @@ use Webfox\Xero\OauthCredentialManager;
 
 class FileStore implements OauthCredentialManager
 {
-    /** @var FilesystemManager  */
+    /** @var FilesystemManager */
     protected $disk;
 
     /** @var string */
@@ -20,8 +18,8 @@ class FileStore implements OauthCredentialManager
 
     public function __construct(protected FilesystemManager $files, protected Store $session, protected Oauth2Provider $oauthProvider)
     {
-        $this->disk          = $files->disk(config('xero.credential_disk', config('filesystems.default')));
-        $this->filePath      = 'xero.json';
+        $this->disk = $files->disk(config('xero.credential_disk', config('filesystems.default')));
+        $this->filePath = 'xero.json';
     }
 
     public function getAccessToken(): string
@@ -37,14 +35,14 @@ class FileStore implements OauthCredentialManager
     public function getTenants(): ?array
     {
         return $this->data('tenants');
-    } 
+    }
 
-    public function getTenantId(int $tenant =0): string
+    public function getTenantId(int $tenant = 0): string
     {
-        if(!isset($this->data('tenants')[$tenant]))
-        {
-            throw new \Exception("No such tenant exists");
+        if (! isset($this->data('tenants')[$tenant])) {
+            throw new \Exception('No such tenant exists');
         }
+
         return $this->data('tenants')[$tenant]['Id'];
     }
 
@@ -94,11 +92,11 @@ class FileStore implements OauthCredentialManager
     public function store(AccessTokenInterface $token, array $tenants = null): void
     {
         $ret = $this->disk->put($this->filePath, json_encode([
-            'token'         => $token->getToken(),
+            'token' => $token->getToken(),
             'refresh_token' => $token->getRefreshToken(),
-            'id_token'      => $token->getValues()['id_token'],
-            'expires'       => $token->getExpires(),
-            'tenants'       => $tenants ?? $this->getTenants()
+            'id_token' => $token->getValues()['id_token'],
+            'expires' => $token->getExpires(),
+            'tenants' => $tenants ?? $this->getTenants(),
         ]), 'private');
 
         if ($ret === false) {
@@ -114,12 +112,12 @@ class FileStore implements OauthCredentialManager
             $decodedToken = $jwt->decode();
 
             return [
-                'given_name'  => $decodedToken->getGivenName(),
+                'given_name' => $decodedToken->getGivenName(),
                 'family_name' => $decodedToken->getFamilyName(),
-                'email'       => $decodedToken->getEmail(),
-                'user_id'     => $decodedToken->getXeroUserId(),
-                'username'    => $decodedToken->getPreferredUsername(),
-                'session_id'  => $decodedToken->getGlobalSessionId()
+                'email' => $decodedToken->getEmail(),
+                'user_id' => $decodedToken->getXeroUserId(),
+                'username' => $decodedToken->getPreferredUsername(),
+                'session_id' => $decodedToken->getGlobalSessionId(),
             ];
         } catch (\Throwable $e) {
             return null;
@@ -128,7 +126,7 @@ class FileStore implements OauthCredentialManager
 
     protected function data(string $key = null)
     {
-        if (!$this->exists()) {
+        if (! $this->exists()) {
             throw new \Exception('Xero oauth credentials are missing');
         }
 

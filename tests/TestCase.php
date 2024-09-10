@@ -21,5 +21,4 @@ class TestCase extends Orchestra
             XeroServiceProvider::class,
         ];
     }
-
 }

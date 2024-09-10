@@ -30,18 +30,18 @@ class CallbackTest extends TestCase
             ->shouldReceive('send')
             ->withArgs(function (Request $request) {
                 $this->assertEquals('GET', $request->getMethod());
-                $this->assertEquals('https://api.xero.com/Connections', (string)$request->getUri());
+                $this->assertEquals('https://api.xero.com/Connections', (string) $request->getUri());
                 $this->assertEquals('application/json', $request->getHeader('Content-Type')[0]);
 
                 return true;
             })
             ->once()
             ->andReturn(new Response(200, [], json_encode([[
-                "id" => 'id',
-                "tenantId" => 'tenant_id',
-                "authEventId" => 'auth_event_id',
-                "tenantType" => 'tenant_type',
-                "tenantName" => 'tenant_name',
+                'id' => 'id',
+                'tenantId' => 'tenant_id',
+                'authEventId' => 'auth_event_id',
+                'tenantType' => 'tenant_type',
+                'tenantName' => 'tenant_name',
             ]])));
 
         $this->mock(Oauth2Provider::class, function (MockInterface $mock) {
@@ -69,7 +69,7 @@ class CallbackTest extends TestCase
                     'Id' => 'tenant_id',
                     'Name' => 'tenant_name',
                     'ConnectionId' => 'id',
-                ]
+                ],
             ], $event->tenants);
 
             return true;
@@ -117,11 +117,11 @@ class CallbackTest extends TestCase
         $this->expectExceptionMessage('Error: Error Description');
 
         $this->get(route('xero.auth.callback', [
-                'state' => 'foo',
-                'code' => 'bar',
-                'error' => 'error',
-                'error_description' => 'error description',
-            ]));
+            'state' => 'foo',
+            'code' => 'bar',
+            'error' => 'error',
+            'error_description' => 'error description',
+        ]));
 
         Event::assertNotDispatched(XeroAuthorized::class);
     }
@@ -144,9 +144,9 @@ class CallbackTest extends TestCase
         $this->expectExceptionMessage('foo');
 
         $this->get(route('xero.auth.callback', [
-                'state' => 'foo',
-                'code' => 'bar',
-            ]))
+            'state' => 'foo',
+            'code' => 'bar',
+        ]))
             ->assertInternalServerError();
 
         Event::assertNotDispatched(XeroAuthorized::class);

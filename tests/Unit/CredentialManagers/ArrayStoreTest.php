@@ -3,15 +3,13 @@
 namespace Tests\Webfox\Xero\Unit\CredentialManagers;
 
 use Exception;
-use Illuminate\Cache\Repository;
 use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Session;
 use Mockery\MockInterface;
-use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
-use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
-use Webfox\Xero\Oauth2Provider;
 use Tests\Webfox\Xero\TestCase;
+use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
+use Webfox\Xero\Oauth2Provider;
 
 class ArrayStoreTest extends TestCase
 {
@@ -19,14 +17,14 @@ class ArrayStoreTest extends TestCase
     {
         $sut = new ArrayStore(app(Store::class), app(Oauth2Provider::class));
 
-        $this->assertThrows(fn() => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getTenants(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getTenantId(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenants(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenantId(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
-        $this->assertThrows(fn() => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertNull($sut->getUser());
     }
 
@@ -37,15 +35,15 @@ class ArrayStoreTest extends TestCase
             'token' => 'default-token',
             'refresh_token' => 'default-refresh-token',
             'id_token' => [
-                'token' => 'foo'
+                'token' => 'foo',
             ],
             'expires' => $expires = strtotime('+1 hour'),
             'tenants' => [
                 [
                     'Id' => '123',
                     'tenant' => 'tenant_id',
-                    'expires' => 3600
-                ]
+                    'expires' => 3600,
+                ],
             ],
         ];
 
@@ -55,8 +53,8 @@ class ArrayStoreTest extends TestCase
             [
                 'Id' => '123',
                 'tenant' => 'tenant_id',
-                'expires' => 3600
-            ]
+                'expires' => 3600,
+            ],
         ], $sut->getTenants());
         $this->assertEquals('123', $sut->getTenantId());
         $this->assertEquals($expires, $sut->getExpires());
@@ -94,12 +92,12 @@ class ArrayStoreTest extends TestCase
             'token' => 'token',
             'refresh_token' => 'refresh-token',
             'id_token' => [
-                'token' => 'foo'
+                'token' => 'foo',
             ],
             'expires' => '1234',
             'tenants' => [
                 'tenant' => 'tenant_id',
-                'expires' => 3600
+                'expires' => 3600,
             ],
         ], $sut->getData());
     }
@@ -125,7 +123,7 @@ class ArrayStoreTest extends TestCase
             'token' => 'token',
             'refresh_token' => 'refresh-token',
             'id_token' => [
-                'token' => 'foo'
+                'token' => 'foo',
             ],
             'expires' => '1234',
             'tenants' => null,
@@ -141,12 +139,12 @@ class ArrayStoreTest extends TestCase
         ];
 
         $this->assertEquals([
-            "given_name" => "James Freeman",
-            "family_name" => "Freeman",
-            "email" => "foo@test.test",
-            "user_id" => "",
-            "username" => "JamesFreeman",
-            "session_id" => "",
+            'given_name' => 'James Freeman',
+            'family_name' => 'Freeman',
+            'email' => 'foo@test.test',
+            'user_id' => '',
+            'username' => 'JamesFreeman',
+            'session_id' => '',
         ], $sut->getUser());
     }
 }

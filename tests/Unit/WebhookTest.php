@@ -38,7 +38,7 @@ class WebhookTest extends TestCase
             app(OauthCredentialManager::class),
             app(AccountingApi::class),
             json_encode([
-                'differentArrayKeys' => 'nope'
+                'differentArrayKeys' => 'nope',
             ]),
             'signing-key'
         );
@@ -88,11 +88,11 @@ class WebhookTest extends TestCase
 
         $this->assertCount(2, $events);
 
-        tap($events->first(), function($event) use($invoiceEvent){
+        tap($events->first(), function ($event) use ($invoiceEvent) {
             $this->assertEquals(new WebhookEvent(app(OauthCredentialManager::class), app(AccountingApi::class), $invoiceEvent), $event);
         });
 
-        tap($events->last(), function($event) use($contactEvent){
+        tap($events->last(), function ($event) use ($contactEvent) {
             $this->assertEquals(new WebhookEvent(app(OauthCredentialManager::class), app(AccountingApi::class), $contactEvent), $event);
         });
     }
@@ -103,7 +103,7 @@ class WebhookTest extends TestCase
 
         config()->set('xero.oauth.webhook_signing_key', 'signing-key');
 
-        Route::post('/some-test-route', function(Webhook $webhook) {
+        Route::post('/some-test-route', function (Webhook $webhook) {
             $this->assertInstanceOf(Webhook::class, $webhook);
             $this->assertCount(2, $webhook->getEvents());
             $this->assertTrue($webhook->validate('ezQ/dMl1V+ryBlIQPVfG5y8mF3X9Pg4e95SyJZg2dXw='));
