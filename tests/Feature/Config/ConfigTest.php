@@ -18,7 +18,7 @@ class ConfigTest extends TestCase
                 'client_secret' => 'demo-client-secret',
                 'webhook_signing_key' => 'webhook-key',
                 'scopes' => [
-                    'openid', 'email', 'profile', 'offline_access', 'accounting.settings'
+                    'openid', 'email', 'profile', 'offline_access', 'accounting.settings',
                 ],
                 'redirect_on_success' => 'xero.auth.success',
                 'redirect_uri' => 'xero.auth.callback',

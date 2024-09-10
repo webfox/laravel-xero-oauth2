@@ -13,5 +13,4 @@ class AuthorizationController extends Controller
     {
         return $redirect->to($oauth->getAuthorizationUrl());
     }
-
 }

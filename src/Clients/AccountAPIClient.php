@@ -4,5 +4,4 @@ namespace Webfox\Xero\Clients;
 
 class AccountAPIClient extends BaseClient
 {
-
 }

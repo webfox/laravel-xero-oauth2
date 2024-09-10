@@ -13,19 +13,19 @@ class Webhook
 
     public function __construct(protected OauthCredentialManager $credentialManager, protected AccountingApi $accountingApi, protected string $payload, protected string $signingKey)
     {
-        $this->properties        = new Collection(json_decode($payload, true));
+        $this->properties = new Collection(json_decode($payload, true));
 
         // bail if json_decode fails
         if ($this->properties->isEmpty()) {
-            throw new \Exception('The webhook payload could not be decoded: ' . json_last_error_msg());
+            throw new \Exception('The webhook payload could not be decoded: '.json_last_error_msg());
         }
 
         // bail if we don't have all the fields we are expecting
-        if (!$this->properties->has(['events', 'firstEventSequence', 'lastEventSequence'])) {
+        if (! $this->properties->has(['events', 'firstEventSequence', 'lastEventSequence'])) {
             throw new \Exception('The webhook payload was malformed');
         }
 
-        $this->events = new Collection(array_map(function($event) {
+        $this->events = new Collection(array_map(function ($event) {
             return new WebhookEvent($this->credentialManager, $this->accountingApi, $event);
         }, $this->properties->get('events')));
     }

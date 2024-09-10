@@ -2,17 +2,17 @@
 
 namespace Webfox\Xero\Controllers;
 
-use Illuminate\Http\Request;
-use Webfox\Xero\Oauth2Provider;
-use Illuminate\Routing\Controller;
-use XeroAPI\XeroPHP\Api\IdentityApi;
-use Illuminate\Support\Facades\Event;
-use Webfox\Xero\Events\XeroAuthorized;
-use Webfox\Xero\OauthCredentialManager;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Webfox\Xero\Events\XeroAuthorized;
 use Webfox\Xero\Exceptions\OAuthException;
+use Webfox\Xero\Oauth2Provider;
+use Webfox\Xero\OauthCredentialManager;
+use XeroAPI\XeroPHP\Api\IdentityApi;
 
 class AuthorizationCallbackController extends Controller
 {
@@ -24,8 +24,8 @@ class AuthorizationCallbackController extends Controller
             $this->validate($request, [
                 'error' => ['sometimes', 'required', 'string'],
                 'error_description' => ['required_with:error', 'string'],
-                'code'  => ['required_if:error,null', 'string'],
-                'state' => ['required', 'string', "in:{$oauth->getState()}"]
+                'code' => ['required_if:error,null', 'string'],
+                'state' => ['required', 'string', "in:{$oauth->getState()}"],
             ]);
 
             if ($request->has('error')) {
@@ -41,16 +41,16 @@ class AuthorizationCallbackController extends Controller
             }
 
             $accessToken = $provider->getAccessToken('authorization_code', $request->only('code'));
-            $identity->getConfig()->setAccessToken((string)$accessToken->getToken());
+            $identity->getConfig()->setAccessToken((string) $accessToken->getToken());
 
             //Iterate tenants
-            $tenants = array();
+            $tenants = [];
 
             foreach ($identity->getConnections() as $c) {
                 $tenants[] = [
-                    "Id" => $c->getTenantId(),
-                    "Name" => $c->getTenantName(),
-                    "ConnectionId" => $c->getId(),
+                    'Id' => $c->getTenantId(),
+                    'Name' => $c->getTenantName(),
+                    'ConnectionId' => $c->getId(),
                 ];
             }
 

@@ -10,7 +10,7 @@ class AuthorizeTest extends TestCase
 {
     public function test_that_you_can_get_authorize_route()
     {
-        $this->mock(OauthCredentialManager::class, function(MockInterface $mock){
+        $this->mock(OauthCredentialManager::class, function (MockInterface $mock) {
             $mock->shouldReceive('getAuthorizationUrl')
                 ->once()
                 ->andReturn('https://example.com/foo');

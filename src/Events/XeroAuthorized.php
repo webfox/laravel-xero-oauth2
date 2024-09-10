@@ -12,10 +12,10 @@ class XeroAuthorized
 
     public function __construct(public array $data)
     {
-        $this->token         = $data['token'];
+        $this->token = $data['token'];
         $this->refresh_token = $data['refresh_token'];
-        $this->id_token      = $data['id_token'];
-        $this->expires       = $data['expires'];
-        $this->tenants       = $data['tenants'];
+        $this->id_token = $data['id_token'];
+        $this->expires = $data['expires'];
+        $this->tenants = $data['tenants'];
     }
 }

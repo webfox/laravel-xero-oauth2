@@ -49,10 +49,10 @@ class MockAccessToken implements AccessTokenInterface, Arrayable
     public function toArray()
     {
         return [
-            'token'         => $this->getToken(),
+            'token' => $this->getToken(),
             'refresh_token' => $this->getRefreshToken(),
-            'id_token'      => $this->getValues()['id_token'],
-            'expires'       => $this->getExpires(),
+            'id_token' => $this->getValues()['id_token'],
+            'expires' => $this->getExpires(),
         ];
     }
 

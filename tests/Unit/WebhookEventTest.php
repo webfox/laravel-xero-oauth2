@@ -91,7 +91,7 @@ class WebhookEventTest extends TestCase
             ->shouldReceive('send')
             ->withArgs(function (Request $request) {
                 $this->assertEquals('GET', $request->getMethod());
-                $this->assertEquals('https://api.xero.com/api.xro/2.0/Invoices/123', (string)$request->getUri());
+                $this->assertEquals('https://api.xero.com/api.xro/2.0/Invoices/123', (string) $request->getUri());
                 $this->assertEquals('application/json', $request->getHeader('Content-Type')[0]);
                 $this->assertEquals('oauth-tenant-id', $request->getHeader('xero-tenant-id')[0]);
                 $this->assertEquals('Bearer oauth-access-token', $request->getHeader('Authorization')[0]);
@@ -99,7 +99,7 @@ class WebhookEventTest extends TestCase
                 return true;
             })
             ->once()
-            ->andReturn(new Response(200, [], file_get_contents(__DIR__ . '/../TestSupport/Stubs/invoices-request.json')));
+            ->andReturn(new Response(200, [], file_get_contents(__DIR__.'/../TestSupport/Stubs/invoices-request.json')));
 
         $webhookEvent = new WebhookEvent(app(OauthCredentialManager::class), app(AccountingApi::class), [
             'resourceUrl' => 'https://api.xero.com/api.xro/2.0/Invoices/123',
@@ -131,7 +131,7 @@ class WebhookEventTest extends TestCase
             ->shouldReceive('send')
             ->withArgs(function (Request $request) {
                 $this->assertEquals('GET', $request->getMethod());
-                $this->assertEquals('https://api.xero.com/api.xro/2.0/Contacts/123', (string)$request->getUri());
+                $this->assertEquals('https://api.xero.com/api.xro/2.0/Contacts/123', (string) $request->getUri());
                 $this->assertEquals('application/json', $request->getHeader('Content-Type')[0]);
                 $this->assertEquals('oauth-tenant-id', $request->getHeader('xero-tenant-id')[0]);
                 $this->assertEquals('Bearer oauth-access-token', $request->getHeader('Authorization')[0]);
@@ -139,7 +139,7 @@ class WebhookEventTest extends TestCase
                 return true;
             })
             ->once()
-            ->andReturn(new Response(200, [], file_get_contents(__DIR__ . '/../TestSupport/Stubs/contacts-request.json')));
+            ->andReturn(new Response(200, [], file_get_contents(__DIR__.'/../TestSupport/Stubs/contacts-request.json')));
 
         $webhookEvent = new WebhookEvent(app(OauthCredentialManager::class), app(AccountingApi::class), [
             'resourceUrl' => 'https://api.xero.com/api.xro/2.0/Contacts/123',
