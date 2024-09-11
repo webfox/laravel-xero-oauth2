@@ -1,22 +1,31 @@
 <?php
 
-namespace Tests\Webfox\Xero\Unit\CredentialManagers;
+namespace Tests\Webfox\Xero\Unit;
 
 use Exception;
 use Illuminate\Cache\Repository;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
+use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
+use Webfox\Xero\Oauth2CredentialManagers\FileStore;
 use Webfox\Xero\Oauth2Provider;
+use Webfox\Xero\OauthCredentialManager;
 
-class CacheStoreTest extends TestCase
+class CredentialManagersTest extends TestCase
 {
-    public function test_you_can_get_cache_store_without_existing_data()
+    #[DataProvider('credentialManagers')]
+    public function test_you_can_get_file_store_without_existing_data($sutClass, $dependencies, $setupFunction, $createExistingData)
     {
-        $sut = new CacheStore(app(Repository::class), app(Store::class), app(Oauth2Provider::class));
+        $setupFunction();
+
+        $sut = new $sutClass(...$this->loadDependencies($dependencies));
 
         $this->assertThrows(fn () => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertThrows(fn () => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
@@ -29,10 +38,14 @@ class CacheStoreTest extends TestCase
         $this->assertNull($sut->getUser());
     }
 
-    public function test_you_can_get_cache_store_with_existing_data()
+    #[DataProvider('credentialManagers')]
+    public function test_you_can_get_file_store_with_existing_data($sutClass, $dependencies, $setupFunction, $createExistingData)
     {
-        $cache = app(Repository::class);
-        $cacheData = [
+        $setupFunction();
+
+        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+
+        $createExistingData($sut, $existingData = [
             'token' => 'default-token',
             'refresh_token' => 'default-refresh-token',
             'id_token' => [
@@ -46,10 +59,7 @@ class CacheStoreTest extends TestCase
                     'expires' => 3600,
                 ],
             ],
-        ];
-
-        $sut = new CacheStore($cache, app(Store::class), app(Oauth2Provider::class));
-        $cache->put('xero_oauth', $cacheData);
+        ]);
 
         $this->assertEquals('default-token', $sut->getAccessToken());
         $this->assertEquals('default-refresh-token', $sut->getRefreshToken());
@@ -62,14 +72,17 @@ class CacheStoreTest extends TestCase
         ], $sut->getTenants());
         $this->assertEquals('123', $sut->getTenantId());
         $this->assertEquals($expires, $sut->getExpires());
-        $this->assertEquals($cacheData, $sut->getData());
+        $this->assertEquals($existingData, $sut->getData());
         $this->assertTrue($sut->exists());
         $this->assertFalse($sut->isExpired());
         $this->assertNull($sut->getUser());
     }
 
-    public function test_that_authorization_sets_state_correctly()
+    #[DataProvider('credentialManagers')]
+    public function test_that_authorization_sets_state_correctly($sutClass, $dependencies, $setupFunction, $createExistingData)
     {
+        $setupFunction();
+
         $this->mock(Oauth2Provider::class, function (MockInterface $mock) {
             $mock->shouldReceive('getAuthorizationUrl')
                 ->with(['scope' => config('xero.oauth.scopes')])
@@ -79,16 +92,19 @@ class CacheStoreTest extends TestCase
             $mock->shouldReceive('getState')->andReturn('state');
         });
 
-        $sut = new CacheStore(app(Repository::class), app(Store::class), app(Oauth2Provider::class));
+        $sut = new $sutClass(...$this->loadDependencies($dependencies));
 
         $this->assertEquals('https://example.com/foo', $sut->getAuthorizationUrl());
         $this->assertEquals('state', $sut->getState());
-        $this->assertEquals('state', Session::get('xero_oauth'));
+        $this->assertEquals('state', Session::get('xero_oauth2_state'));
     }
 
-    public function test_that_it_stores_data_correctly()
+    #[DataProvider('credentialManagers')]
+    public function test_that_it_stores_data_correctly($sutClass, $dependencies, $setupFunction, $createExistingData)
     {
-        $sut = new CacheStore(app(Repository::class), app(Store::class), app(Oauth2Provider::class));
+        $setupFunction();
+
+        $sut = new $sutClass(...$this->loadDependencies($dependencies));
 
         $sut->store(new MockAccessToken(), ['tenant' => 'tenant_id', 'expires' => 3600]);
 
@@ -106,10 +122,10 @@ class CacheStoreTest extends TestCase
         ], $sut->getData());
     }
 
-    public function test_that_it_can_refresh_its_token()
+    #[DataProvider('credentialManagers')]
+    public function test_that_it_can_refresh_its_token($sutClass, $dependencies, $setupFunction, $createExistingData)
     {
-        $cache = app(Repository::class);
-        $cache->put('xero_oauth', ['refresh_token' => 'default-refresh-token']);
+        $setupFunction();
 
         $this->mock(Oauth2Provider::class, function (MockInterface $mock) {
             $mock->shouldReceive('getAccessToken')
@@ -121,7 +137,9 @@ class CacheStoreTest extends TestCase
                 ->andReturn(new MockAccessToken());
         });
 
-        $sut = new CacheStore($cache, app(Store::class), app(Oauth2Provider::class));
+        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+
+        $createExistingData($sut, ['refresh_token' => 'default-refresh-token']);
 
         $sut->refresh();
 
@@ -136,15 +154,17 @@ class CacheStoreTest extends TestCase
         ], $sut->getData());
     }
 
-    public function test_you_can_get_user()
+    #[DataProvider('credentialManagers')]
+    public function test_you_can_get_user($sutClass, $dependencies, $setupFunction, $createExistingData)
     {
-        $cache = app(Repository::class);
-        $cache->put('xero_oauth', [
+        $setupFunction();
+
+        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+
+        $createExistingData($sut, [
             'id_token' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnaXZlbl9uYW1lIjoiSmFtZXMgRnJlZW1hbiIsImZhbWlseV9uYW1lIjoiRnJlZW1hbiIsImVtYWlsIjoiZm9vQHRlc3QudGVzdCIsInVzZXJfaWQiOjEyMzQ1Njc4OSwidXNlcm5hbWUiOiJKYW1lc0ZyZWVtYW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJKYW1lc0ZyZWVtYW4iLCJzZXNzaW9uX2lkIjoic2Vzc2lvbklkIiwic3ViIjoiMTIzNDU2Nzg5MCIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoiIiwiYXV0aF90aW1lIjoiIiwiaXNzIjoiIiwiYXRfaGFzaCI6IiIsInNpZCI6IiIsImdsb2JhbF9zZXNzaW9uX2lkIjoiIiwieGVyb191c2VyaWQiOiIifQ.IcXMCuIOjgN-C-mJF2GXxsOhThc3_JOBFFi1m5e7LLg',
             'access_token' => 'james-secret-key',
         ]);
-
-        $sut = new CacheStore($cache, app(Store::class), app(Oauth2Provider::class));
 
         $this->assertEquals([
             'given_name' => 'James Freeman',
@@ -154,5 +174,49 @@ class CacheStoreTest extends TestCase
             'username' => 'JamesFreeman',
             'session_id' => '',
         ], $sut->getUser());
+    }
+
+    public static function credentialManagers(): array
+    {
+        return [
+            'fileStore' => [
+                'sutClass' => FileStore::class,
+                'dependencies' => [
+                    FilesystemManager::class,
+                    Store::class,
+                    Oauth2Provider::class
+                ],
+                'setupFunction' => fn() => Storage::fake(),
+                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => Storage::put('xero.json', json_encode($data)),
+            ],
+
+            'cacheStore' => [
+                'sutClass' => CacheStore::class,
+                'dependencies' => [
+                    Repository::class,
+                    Store::class,
+                    Oauth2Provider::class
+                ],
+                'setupFunction' => fn() => null,
+                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth2_state', $data),
+            ],
+
+            'arrayStore' => [
+                'sutClass' => ArrayStore::class,
+                'dependencies' => [
+                    Store::class,
+                    Oauth2Provider::class
+                ],
+                'setupFunction' => fn() => null,
+                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
+            ],
+        ];
+    }
+
+    private function loadDependencies(array $dependencies)
+    {
+        return collect($dependencies)
+            ->map(fn($dependency) => app($dependency))
+            ->toArray();
     }
 }
