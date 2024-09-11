@@ -184,10 +184,10 @@ class CredentialManagersTest extends TestCase
                 'dependencies' => [
                     FilesystemManager::class,
                     Store::class,
-                    Oauth2Provider::class
+                    Oauth2Provider::class,
                 ],
-                'setupFunction' => fn() => Storage::fake(),
-                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => Storage::put('xero.json', json_encode($data)),
+                'setupFunction' => fn () => Storage::fake(),
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => Storage::put('xero.json', json_encode($data)),
             ],
 
             'cacheStore' => [
@@ -195,20 +195,20 @@ class CredentialManagersTest extends TestCase
                 'dependencies' => [
                     Repository::class,
                     Store::class,
-                    Oauth2Provider::class
+                    Oauth2Provider::class,
                 ],
-                'setupFunction' => fn() => null,
-                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth2_state', $data),
+                'setupFunction' => fn () => null,
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth2_state', $data),
             ],
 
             'arrayStore' => [
                 'sutClass' => ArrayStore::class,
                 'dependencies' => [
                     Store::class,
-                    Oauth2Provider::class
+                    Oauth2Provider::class,
                 ],
-                'setupFunction' => fn() => null,
-                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
+                'setupFunction' => fn () => null,
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
             ],
         ];
     }
@@ -216,7 +216,7 @@ class CredentialManagersTest extends TestCase
     private function loadDependencies(array $dependencies)
     {
         return collect($dependencies)
-            ->map(fn($dependency) => app($dependency))
+            ->map(fn ($dependency) => app($dependency))
             ->toArray();
     }
 }
