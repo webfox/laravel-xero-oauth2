@@ -198,7 +198,7 @@ class CredentialManagersTest extends TestCase
                     Oauth2Provider::class,
                 ],
                 'setupFunction' => fn () => null,
-                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth2_state', $data),
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_state', $data),
             ],
 
             'arrayStore' => [
