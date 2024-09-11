@@ -18,13 +18,13 @@ class CacheStore extends BaseCredentialManager implements OauthCredentialManager
 
     public function getState(): string
     {
-        return $this->session->get($this->cacheKey);
+        return $this->session->get('xero_oauth2_state');
     }
 
     public function getAuthorizationUrl(): string
     {
         $redirectUrl = $this->oauthProvider->getAuthorizationUrl(['scope' => config('xero.oauth.scopes')]);
-        $this->session->put($this->cacheKey, $this->oauthProvider->getState());
+        $this->session->put('xero_oauth2_state', $this->oauthProvider->getState());
 
         return $redirectUrl;
     }
