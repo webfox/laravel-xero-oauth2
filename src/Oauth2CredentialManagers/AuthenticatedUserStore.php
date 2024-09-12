@@ -10,7 +10,7 @@ class AuthenticatedUserStore extends ModelStore
 {
     public function __construct(protected Store $session, protected Oauth2Provider $oauthProvider)
     {
-        if(!Auth::check()){
+        if (! Auth::check()) {
             throw new \Exception('User is not authenticated');
         }
 

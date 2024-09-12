@@ -78,5 +78,4 @@ return [
         'url_resource_owner_details' => 'https://api.xero.com/api.xro/2.0/Organisation',
     ],
 
-
 ];
