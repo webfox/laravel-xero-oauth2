@@ -4,10 +4,8 @@ namespace Tests\Webfox\Xero\Unit;
 
 use Exception;
 use Illuminate\Cache\Repository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Session\Store;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
@@ -205,7 +203,7 @@ class CredentialManagersTest extends TestCase
                     Oauth2Provider::class,
                 ],
                 'setupFunction' => fn () => null,
-                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_state', $data),
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth', $data),
             ],
 
             'arrayStore' => [

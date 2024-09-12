@@ -10,7 +10,7 @@ use Webfox\Xero\OauthCredentialManager;
 
 class CacheStore extends BaseCredentialManager implements OauthCredentialManager
 {
-    protected string $cacheKey = 'xero_state';
+    protected string $cacheKey = 'xero_oauth';
 
     public function __construct(protected Repository $cache, protected Store $session, protected Oauth2Provider $oauthProvider)
     {
