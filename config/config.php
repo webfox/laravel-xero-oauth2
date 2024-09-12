@@ -13,6 +13,13 @@ return [
     'credential_store' => FileStore::class,
 
     /************************************************************************
+     * Model used to store credentials.
+     ************************************************************************/
+    'model_credential' => [
+        'key' => 'xero_credentials',
+    ],
+
+    /************************************************************************
      * Disk used to store credentials.
      ************************************************************************/
     'credential_disk' => env('XERO_CREDENTIAL_DISK'),
@@ -70,5 +77,6 @@ return [
         'url_access_token' => 'https://identity.xero.com/connect/token',
         'url_resource_owner_details' => 'https://api.xero.com/api.xro/2.0/Organisation',
     ],
+
 
 ];

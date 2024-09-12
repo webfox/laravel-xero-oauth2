@@ -15,19 +15,6 @@ class ArrayStore extends BaseCredentialManager implements OauthCredentialManager
     {
     }
 
-    public function getState(): string
-    {
-        return $this->session->get('xero_oauth2_state') ?? '';
-    }
-
-    public function getAuthorizationUrl(): string
-    {
-        $redirectUrl = $this->oauthProvider->getAuthorizationUrl(['scope' => config('xero.oauth.scopes')]);
-        $this->session->put('xero_oauth2_state', $this->oauthProvider->getState());
-
-        return $redirectUrl;
-    }
-
     public function exists(): bool
     {
         return $this->dataStorage !== null;

@@ -4,19 +4,26 @@ namespace Tests\Webfox\Xero\Unit;
 
 use Exception;
 use Illuminate\Cache\Repository;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Session\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
+use Webfox\Xero\HasXeroCredentials;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
+use Webfox\Xero\Oauth2CredentialManagers\AuthenticatedUserStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
 use Webfox\Xero\Oauth2CredentialManagers\FileStore;
+use Webfox\Xero\Oauth2CredentialManagers\ModelStore;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Webfox\Xero\ActiveXeroModel;
 
 class CredentialManagersTest extends TestCase
 {
@@ -210,13 +217,49 @@ class CredentialManagersTest extends TestCase
                 'setupFunction' => fn () => null,
                 'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
             ],
+
+            'modelStore' => [
+                'sutClass' => ModelStore::class,
+                'dependencies' => [
+                    Store::class,
+                    Oauth2Provider::class,
+                ],
+                'setupFunction' => fn () => app(ActiveXeroModel::class)->setActiveModel(User::create()),
+                'createExistingData' => function (OauthCredentialManager $credentialManager, $data){
+                    app(ActiveXeroModel::class)->getModel()->update(['xero_credentials' => $data]);
+                },
+            ],
+
+            'authenticatedUserStore' => [
+                'sutClass' => AuthenticatedUserStore::class,
+                'dependencies' => [
+                    Store::class,
+                    Oauth2Provider::class,
+                ],
+                'setupFunction' => fn () => auth()->login(User::create()),
+                'createExistingData' => function (OauthCredentialManager $credentialManager, $data){
+                    $credentialManager->model->update(['xero_credentials' => $data]);
+                },
+            ],
         ];
     }
 
-    private function loadDependencies(array $dependencies)
+    private function loadDependencies(array $dependencies): array
     {
         return collect($dependencies)
             ->map(fn ($dependency) => app($dependency))
             ->toArray();
     }
+}
+
+class User extends Authenticatable
+{
+    protected function casts()
+    {
+        return [
+            'xero_credentials' => 'array',
+        ];
+    }
+
+    protected $fillable = ['xero_credentials'];
 }

@@ -34,6 +34,10 @@ class XeroServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'xero');
 
+        $this->app->singleton(ActiveXeroModel::class, function (Application $app) {
+            return new ActiveXeroModel();
+        });
+
         /*
          * Singleton as this is how the package talks to Xero,
          * there's no reason for this to need to change
