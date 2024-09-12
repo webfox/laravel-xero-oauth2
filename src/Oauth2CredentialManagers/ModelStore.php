@@ -5,9 +5,9 @@ namespace Webfox\Xero\Oauth2CredentialManagers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Session\Store;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Webfox\Xero\ActiveXeroModel;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
-use Webfox\Xero\ActiveXeroModel;
 
 class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 {
@@ -32,7 +32,7 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
                 'id_token' => $token->getValues()['id_token'],
                 'expires' => $token->getExpires(),
                 'tenants' => $tenants ?? $this->getTenants(),
-            ]
+            ],
         ]);
     }
 
