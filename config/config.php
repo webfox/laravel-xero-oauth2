@@ -13,13 +13,6 @@ return [
     'credential_store' => FileStore::class,
 
     /************************************************************************
-     * Model used to store credentials.
-     ************************************************************************/
-    'model_credential' => [
-        'key' => 'xero_credentials',
-    ],
-
-    /************************************************************************
      * Disk used to store credentials.
      ************************************************************************/
     'credential_disk' => env('XERO_CREDENTIAL_DISK'),

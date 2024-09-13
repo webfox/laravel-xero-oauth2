@@ -13,7 +13,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
-use Webfox\Xero\ActiveXeroModel;
+use Webfox\Xero\Xero;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
 use Webfox\Xero\Oauth2CredentialManagers\AuthenticatedUserStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
@@ -109,6 +109,8 @@ class CredentialManagersTest extends TestCase
         $setupFunction();
 
         $sut = new $sutClass(...$this->loadDependencies($dependencies));
+
+        dd($sut);
 
         $sut->store(new MockAccessToken(), ['tenant' => 'tenant_id', 'expires' => 3600]);
 
@@ -221,9 +223,9 @@ class CredentialManagersTest extends TestCase
                     Store::class,
                     Oauth2Provider::class,
                 ],
-                'setupFunction' => fn () => app(ActiveXeroModel::class)->setActiveModel(User::create()),
+                'setupFunction' => fn () => Xero::useModelStorage(User::create()),
                 'createExistingData' => function (OauthCredentialManager $credentialManager, $data) {
-                    app(ActiveXeroModel::class)->getModel()->update(['xero_credentials' => $data]);
+                    Xero::getModelStorage()->update(['xero_credentials' => $data]);
                 },
             ],
 

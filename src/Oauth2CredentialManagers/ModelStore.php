@@ -5,7 +5,7 @@ namespace Webfox\Xero\Oauth2CredentialManagers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Session\Store;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use Webfox\Xero\ActiveXeroModel;
+use Webfox\Xero\Xero;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
 
@@ -15,7 +15,9 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 
     public function __construct(protected Store $session, protected Oauth2Provider $oauthProvider)
     {
-        $this->model = app(ActiveXeroModel::class)->getModel();
+        $this->model = Xero::getModelStorage();
+
+        dd($this->model);
     }
 
     public function exists(): bool
@@ -47,8 +49,8 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
         return $key === null ? $data : $data[$key] ?? null;
     }
 
-    private function getModelKey()
+    private function getModelKey(): string
     {
-        return config('xero.model_credential.key');
+        return Xero::getModelStorage();
     }
 }
