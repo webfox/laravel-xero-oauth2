@@ -37,7 +37,7 @@ class WebhookEventTest extends TestCase
             'eventDateUtc' => '2021-01-01T00:00:00.000Z',
             'eventType' => 'CREATE',
             'eventCategory' => 'INVOICE',
-            'tenantId' => 'webhook-tentant-id',
+            'tenantId' => 'webhook-tenant-id',
             'tenantType' => 'ORGANISATION',
         ]);
 
@@ -47,7 +47,7 @@ class WebhookEventTest extends TestCase
         $this->assertEquals('2021-01-01T00:00:00.000Z', $sut->getEventDateUtc());
         $this->assertEquals('CREATE', $sut->getEventType());
         $this->assertEquals('INVOICE', $sut->getEventCategory());
-        $this->assertEquals('webhook-tentant-id', $sut->getTenantId());
+        $this->assertEquals('webhook-tenant-id', $sut->getTenantId());
         $this->assertEquals('ORGANISATION', $sut->getTenantType());
         $this->assertEquals(Invoice::class, $sut->getEventClass());
     }
