@@ -5,9 +5,9 @@ namespace Webfox\Xero\Oauth2CredentialManagers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Session\Store;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use Webfox\Xero\Xero;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
+use Webfox\Xero\Xero;
 
 class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 {
