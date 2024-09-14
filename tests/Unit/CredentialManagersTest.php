@@ -13,7 +13,6 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
-use Webfox\Xero\Xero;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
 use Webfox\Xero\Oauth2CredentialManagers\AuthenticatedUserStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
@@ -21,6 +20,7 @@ use Webfox\Xero\Oauth2CredentialManagers\FileStore;
 use Webfox\Xero\Oauth2CredentialManagers\ModelStore;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
+use Webfox\Xero\Xero;
 
 class CredentialManagersTest extends TestCase
 {
