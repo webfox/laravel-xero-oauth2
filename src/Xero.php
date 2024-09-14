@@ -12,21 +12,21 @@ class Xero
 
     public static function useModelStorage(Model $model): void
     {
-        self::$modelStorage = $model;
+        static::$modelStorage = $model;
     }
 
     public static function useAttributeOnModelStore(string $attribute): void
     {
-        self::$modelAttribute = $attribute;
+        static::$modelAttribute = $attribute;
     }
 
     public static function getModelStorage(): Model
     {
-        return self::$modelStorage;
+        return static::$modelStorage;
     }
 
     public static function getModelAttribute(): string
     {
-        return self::$modelAttribute;
+        return static::$modelAttribute;
     }
 }

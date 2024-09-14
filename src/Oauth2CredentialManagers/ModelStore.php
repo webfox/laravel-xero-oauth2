@@ -16,8 +16,6 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
     public function __construct(protected Store $session, protected Oauth2Provider $oauthProvider)
     {
         $this->model = Xero::getModelStorage();
-
-        dd($this->model);
     }
 
     public function exists(): bool
@@ -51,6 +49,6 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 
     private function getModelKey(): string
     {
-        return Xero::getModelStorage();
+        return Xero::getModelAttribute();
     }
 }

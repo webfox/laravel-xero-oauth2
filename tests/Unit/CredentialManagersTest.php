@@ -110,8 +110,6 @@ class CredentialManagersTest extends TestCase
 
         $sut = new $sutClass(...$this->loadDependencies($dependencies));
 
-        dd($sut);
-
         $sut->store(new MockAccessToken(), ['tenant' => 'tenant_id', 'expires' => 3600]);
 
         $this->assertEquals([
