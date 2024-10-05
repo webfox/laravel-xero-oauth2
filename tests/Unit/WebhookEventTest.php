@@ -37,7 +37,7 @@ class WebhookEventTest extends TestCase
             'eventDateUtc' => '2021-01-01T00:00:00.000Z',
             'eventType' => 'CREATE',
             'eventCategory' => 'INVOICE',
-            'tenantId' => '456',
+            'tenantId' => 'webhook-tenant-id',
             'tenantType' => 'ORGANISATION',
         ]);
 
@@ -47,7 +47,7 @@ class WebhookEventTest extends TestCase
         $this->assertEquals('2021-01-01T00:00:00.000Z', $sut->getEventDateUtc());
         $this->assertEquals('CREATE', $sut->getEventType());
         $this->assertEquals('INVOICE', $sut->getEventCategory());
-        $this->assertEquals('456', $sut->getTenantId());
+        $this->assertEquals('webhook-tenant-id', $sut->getTenantId());
         $this->assertEquals('ORGANISATION', $sut->getTenantType());
         $this->assertEquals(Invoice::class, $sut->getEventClass());
     }
@@ -62,7 +62,7 @@ class WebhookEventTest extends TestCase
             'eventDateUtc' => '2021-01-01T00:00:00.000Z',
             'eventType' => 'CREATE',
             'eventCategory' => 'CONTACT',
-            'tenantId' => '456',
+            'tenantId' => 'webhook-tenant-id',
             'tenantType' => 'ORGANISATION',
         ]);
 
@@ -72,7 +72,7 @@ class WebhookEventTest extends TestCase
         $this->assertEquals('2021-01-01T00:00:00.000Z', $sut->getEventDateUtc());
         $this->assertEquals('CREATE', $sut->getEventType());
         $this->assertEquals('CONTACT', $sut->getEventCategory());
-        $this->assertEquals('456', $sut->getTenantId());
+        $this->assertEquals('webhook-tenant-id', $sut->getTenantId());
         $this->assertEquals('ORGANISATION', $sut->getTenantType());
         $this->assertEquals(Contact::class, $sut->getEventClass());
     }
@@ -83,7 +83,7 @@ class WebhookEventTest extends TestCase
 
         $this->mock(OauthCredentialManager::class, function (MockInterface $mock) {
             $mock->shouldReceive('exists')->once()->andReturnTrue();
-            $mock->shouldReceive('getTenantId')->once()->andReturn('oauth-tenant-id');
+            $mock->shouldNotReceive('getTenantId');
             $mock->shouldReceive('getAccessToken')->once()->andReturn('oauth-access-token');
         });
 
@@ -93,7 +93,7 @@ class WebhookEventTest extends TestCase
                 $this->assertEquals('GET', $request->getMethod());
                 $this->assertEquals('https://api.xero.com/api.xro/2.0/Invoices/123', (string) $request->getUri());
                 $this->assertEquals('application/json', $request->getHeader('Content-Type')[0]);
-                $this->assertEquals('oauth-tenant-id', $request->getHeader('xero-tenant-id')[0]);
+                $this->assertEquals('webhook-tenant-id', $request->getHeader('xero-tenant-id')[0]);
                 $this->assertEquals('Bearer oauth-access-token', $request->getHeader('Authorization')[0]);
 
                 return true;
@@ -107,7 +107,7 @@ class WebhookEventTest extends TestCase
             'eventDateUtc' => '2021-01-01T00:00:00.000Z',
             'eventType' => 'CREATE',
             'eventCategory' => 'INVOICE',
-            'tenantId' => '456',
+            'tenantId' => 'webhook-tenant-id',
             'tenantType' => 'ORGANISATION',
         ]);
 
@@ -123,7 +123,7 @@ class WebhookEventTest extends TestCase
 
         $this->mock(OauthCredentialManager::class, function (MockInterface $mock) {
             $mock->shouldReceive('exists')->once()->andReturnTrue();
-            $mock->shouldReceive('getTenantId')->once()->andReturn('oauth-tenant-id');
+            $mock->shouldNotReceive('getTenantId');
             $mock->shouldReceive('getAccessToken')->once()->andReturn('oauth-access-token');
         });
 
@@ -133,7 +133,7 @@ class WebhookEventTest extends TestCase
                 $this->assertEquals('GET', $request->getMethod());
                 $this->assertEquals('https://api.xero.com/api.xro/2.0/Contacts/123', (string) $request->getUri());
                 $this->assertEquals('application/json', $request->getHeader('Content-Type')[0]);
-                $this->assertEquals('oauth-tenant-id', $request->getHeader('xero-tenant-id')[0]);
+                $this->assertEquals('webhook-tenant-id', $request->getHeader('xero-tenant-id')[0]);
                 $this->assertEquals('Bearer oauth-access-token', $request->getHeader('Authorization')[0]);
 
                 return true;
@@ -147,7 +147,7 @@ class WebhookEventTest extends TestCase
             'eventDateUtc' => '2021-01-01T00:00:00.000Z',
             'eventType' => 'CREATE',
             'eventCategory' => 'CONTACT',
-            'tenantId' => '456',
+            'tenantId' => 'webhook-tenant-id',
             'tenantType' => 'ORGANISATION',
         ]);
 
