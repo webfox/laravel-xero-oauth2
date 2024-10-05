@@ -2,6 +2,6 @@
 
 namespace Webfox\Xero\Exceptions;
 
-class OAuthException extends BaseException
+class OAuthException extends XeroException
 {
 }

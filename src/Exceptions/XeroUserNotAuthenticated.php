@@ -2,6 +2,6 @@
 
 namespace Webfox\Xero\Exceptions;
 
-class XeroUserNotAuthenticated extends BaseException
+class XeroUserNotAuthenticated extends XeroException
 {
 }

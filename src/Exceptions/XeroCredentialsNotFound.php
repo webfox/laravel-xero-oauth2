@@ -2,6 +2,6 @@
 
 namespace Webfox\Xero\Exceptions;
 
-class XeroCredentialsNotFound extends BaseException
+class XeroCredentialsNotFound extends XeroException
 {
 }

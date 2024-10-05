@@ -5,7 +5,7 @@ namespace Webfox\Xero\Exceptions;
 use Exception;
 use Throwable;
 
-abstract class BaseException extends Exception
+abstract class XeroException extends Exception
 {
     public function __construct($message, $code = 0, Throwable $previous = null)
     {
