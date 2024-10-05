@@ -3,11 +3,8 @@
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
 use Illuminate\Cache\Repository;
-use Illuminate\Session\Store;
-use Illuminate\Support\Facades\Cache;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
-use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
 
 class CacheStore extends BaseCredentialManager implements OauthCredentialManager

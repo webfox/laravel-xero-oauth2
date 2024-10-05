@@ -4,9 +4,7 @@ namespace Tests\Webfox\Xero\Unit;
 
 use Exception;
 use Illuminate\Cache\Repository;
-use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
