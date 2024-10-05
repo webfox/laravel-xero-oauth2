@@ -83,7 +83,7 @@ class WebhookEventTest extends TestCase
 
         $this->mock(OauthCredentialManager::class, function (MockInterface $mock) {
             $mock->shouldReceive('exists')->once()->andReturnTrue();
-            $mock->shouldReceive('getTenantId')->never()->andReturn('oauth-tenant-id');
+            $mock->shouldNotReceive('getTenantId');
             $mock->shouldReceive('getAccessToken')->once()->andReturn('oauth-access-token');
         });
 
@@ -123,7 +123,7 @@ class WebhookEventTest extends TestCase
 
         $this->mock(OauthCredentialManager::class, function (MockInterface $mock) {
             $mock->shouldReceive('exists')->once()->andReturnTrue();
-            $mock->shouldReceive('getTenantId')->never()->andReturn('oauth-tenant-id');
+            $mock->shouldNotReceive('getTenantId');
             $mock->shouldReceive('getAccessToken')->once()->andReturn('oauth-access-token');
         });
 
