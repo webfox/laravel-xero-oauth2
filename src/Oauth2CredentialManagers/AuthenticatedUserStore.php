@@ -13,7 +13,7 @@ class AuthenticatedUserStore extends ModelStore
             throw new XeroUserNotAuthenticated('User is not authenticated');
         }
 
-        BaseCredentialManager::__construct();
+        parent::__construct();
 
         $this->model = Auth::user();
     }

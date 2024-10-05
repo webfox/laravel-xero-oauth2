@@ -23,7 +23,7 @@ use Webfox\Xero\Xero;
 class CredentialManagersTest extends TestCase
 {
     #[DataProvider('credentialManagers')]
-    public function test_you_can_get_file_store_without_existing_data($sutClass, $setupFunction, $createExistingData)
+    public function test_you_can_get_credential_store_without_existing_data($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
@@ -41,7 +41,7 @@ class CredentialManagersTest extends TestCase
     }
 
     #[DataProvider('credentialManagers')]
-    public function test_you_can_get_file_store_with_existing_data($sutClass, $setupFunction, $createExistingData)
+    public function test_you_can_get_credential_store_with_existing_data($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 

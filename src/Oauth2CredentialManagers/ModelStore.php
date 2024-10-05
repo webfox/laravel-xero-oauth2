@@ -21,7 +21,7 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 
     public function exists(): bool
     {
-        return $this->model && $this->model->exists && is_array($this->model->{$this->getModelKey()});
+        return $this->model?->exists && is_array($this->model->{$this->getModelKey()});
     }
 
     public function store(AccessTokenInterface $token, array $tenants = null): void
