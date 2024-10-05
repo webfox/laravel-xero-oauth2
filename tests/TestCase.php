@@ -10,6 +10,10 @@ class TestCase extends Orchestra
     protected function getEnvironmentSetUp($app): void
     {
         config()->set('app.key', 'base64:dW5venZpb3V2eDRkbHJjaHV3dDR5aW9mcnFpNzFrOTA=');
+        config()->set('database.default', 'testing');
+
+        $migration = include __DIR__.'/TestSupport/Migrations/create_users_table.php';
+        $migration->up();
     }
 
     /**
