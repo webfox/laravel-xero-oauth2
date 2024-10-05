@@ -16,6 +16,12 @@
             "email": "matthew@webfox.co.nz",
             "homepage": "https://webfox.co.nz",
             "role": "Developer"
+        },
+        {
+            "name": "James Freeman",
+            "email": "me@james-freeman.info",
+            "homepage": "https://github.com/JamesFreeman",
+            "role": "Developer"
         }
     ],
     "require": {
