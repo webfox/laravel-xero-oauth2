@@ -2,8 +2,24 @@
 
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
+use Illuminate\Session\Store;
+use Webfox\Xero\Exceptions\XeroTenantNotFound;
+use Webfox\Xero\Oauth2Provider;
+use XeroAPI\XeroPHP\JWTClaims;
+
 abstract class BaseCredentialManager
 {
+    protected Store $session;
+    protected Oauth2Provider $oauthProvider;
+
+    public function __construct()
+    {
+        $this->session = app(Store::class);
+        $this->oauthProvider = app(Oauth2Provider::class);
+    }
+
+    abstract protected function data(string $key = null);
+
     public function getAccessToken(): string
     {
         return $this->data('token');
@@ -22,7 +38,7 @@ abstract class BaseCredentialManager
     public function getTenantId(int $tenant = 0): string
     {
         if (! isset($this->data('tenants')[$tenant])) {
-            throw new \Exception('No such tenant exists');
+            throw new XeroTenantNotFound('No such tenant exists');
         }
 
         return $this->data('tenants')[$tenant]['Id'];
@@ -41,7 +57,7 @@ abstract class BaseCredentialManager
     public function getUser(): ?array
     {
         try {
-            $jwt = new \XeroAPI\XeroPHP\JWTClaims();
+            $jwt = new JWTClaims();
             $jwt->setTokenId($this->data('id_token'));
             $decodedToken = $jwt->decode();
 

@@ -4,16 +4,13 @@ namespace Webfox\Xero\Oauth2CredentialManagers;
 
 use Illuminate\Session\Store;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
 use Webfox\Xero\Oauth2Provider;
 use Webfox\Xero\OauthCredentialManager;
 
 class ArrayStore extends BaseCredentialManager implements OauthCredentialManager
 {
     public ?array $dataStorage = null;
-
-    public function __construct(protected Store $session, protected Oauth2Provider $oauthProvider)
-    {
-    }
 
     public function exists(): bool
     {
@@ -34,7 +31,7 @@ class ArrayStore extends BaseCredentialManager implements OauthCredentialManager
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new \Exception('Xero oauth credentials are missing');
+            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
         }
 
         return $key === null ? $this->dataStorage : $this->dataStorage[$key] ?? null;

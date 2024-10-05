@@ -25,11 +25,11 @@ use Webfox\Xero\Xero;
 class CredentialManagersTest extends TestCase
 {
     #[DataProvider('credentialManagers')]
-    public function test_you_can_get_file_store_without_existing_data($sutClass, $dependencies, $setupFunction, $createExistingData)
+    public function test_you_can_get_file_store_without_existing_data($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
-        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+        $sut = new $sutClass();
 
         $this->assertThrows(fn () => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
         $this->assertThrows(fn () => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
@@ -43,11 +43,11 @@ class CredentialManagersTest extends TestCase
     }
 
     #[DataProvider('credentialManagers')]
-    public function test_you_can_get_file_store_with_existing_data($sutClass, $dependencies, $setupFunction, $createExistingData)
+    public function test_you_can_get_file_store_with_existing_data($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
-        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+        $sut = new $sutClass();
 
         $createExistingData($sut, $existingData = [
             'token' => 'default-token',
@@ -83,7 +83,7 @@ class CredentialManagersTest extends TestCase
     }
 
     #[DataProvider('credentialManagers')]
-    public function test_that_authorization_sets_state_correctly($sutClass, $dependencies, $setupFunction, $createExistingData)
+    public function test_that_authorization_sets_state_correctly($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
@@ -96,7 +96,7 @@ class CredentialManagersTest extends TestCase
             $mock->shouldReceive('getState')->andReturn('state');
         });
 
-        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+        $sut = new $sutClass();
 
         $this->assertEquals('https://example.com/foo', $sut->getAuthorizationUrl());
         $this->assertEquals('state', $sut->getState());
@@ -104,11 +104,11 @@ class CredentialManagersTest extends TestCase
     }
 
     #[DataProvider('credentialManagers')]
-    public function test_that_it_stores_data_correctly($sutClass, $dependencies, $setupFunction, $createExistingData)
+    public function test_that_it_stores_data_correctly($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
-        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+        $sut = new $sutClass();
 
         $sut->store(new MockAccessToken(), ['tenant' => 'tenant_id', 'expires' => 3600]);
 
@@ -127,7 +127,7 @@ class CredentialManagersTest extends TestCase
     }
 
     #[DataProvider('credentialManagers')]
-    public function test_that_it_can_refresh_its_token($sutClass, $dependencies, $setupFunction, $createExistingData)
+    public function test_that_it_can_refresh_its_token($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
@@ -141,7 +141,7 @@ class CredentialManagersTest extends TestCase
                 ->andReturn(new MockAccessToken());
         });
 
-        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+        $sut = new $sutClass();
 
         $createExistingData($sut, ['refresh_token' => 'default-refresh-token']);
 
@@ -159,11 +159,11 @@ class CredentialManagersTest extends TestCase
     }
 
     #[DataProvider('credentialManagers')]
-    public function test_you_can_get_user($sutClass, $dependencies, $setupFunction, $createExistingData)
+    public function test_you_can_get_user($sutClass, $setupFunction, $createExistingData)
     {
         $setupFunction();
 
-        $sut = new $sutClass(...$this->loadDependencies($dependencies));
+        $sut = new $sutClass();
 
         $createExistingData($sut, [
             'id_token' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnaXZlbl9uYW1lIjoiSmFtZXMgRnJlZW1hbiIsImZhbWlseV9uYW1lIjoiRnJlZW1hbiIsImVtYWlsIjoiZm9vQHRlc3QudGVzdCIsInVzZXJfaWQiOjEyMzQ1Njc4OSwidXNlcm5hbWUiOiJKYW1lc0ZyZWVtYW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJKYW1lc0ZyZWVtYW4iLCJzZXNzaW9uX2lkIjoic2Vzc2lvbklkIiwic3ViIjoiMTIzNDU2Nzg5MCIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoiIiwiYXV0aF90aW1lIjoiIiwiaXNzIjoiIiwiYXRfaGFzaCI6IiIsInNpZCI6IiIsImdsb2JhbF9zZXNzaW9uX2lkIjoiIiwieGVyb191c2VyaWQiOiIifQ.IcXMCuIOjgN-C-mJF2GXxsOhThc3_JOBFFi1m5e7LLg',
@@ -185,42 +185,24 @@ class CredentialManagersTest extends TestCase
         return [
             'fileStore' => [
                 'sutClass' => FileStore::class,
-                'dependencies' => [
-                    FilesystemManager::class,
-                    Store::class,
-                    Oauth2Provider::class,
-                ],
                 'setupFunction' => fn () => Storage::fake(),
                 'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => Storage::put('xero.json', json_encode($data)),
             ],
 
             'cacheStore' => [
                 'sutClass' => CacheStore::class,
-                'dependencies' => [
-                    Repository::class,
-                    Store::class,
-                    Oauth2Provider::class,
-                ],
                 'setupFunction' => fn () => null,
                 'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth', $data),
             ],
 
             'arrayStore' => [
                 'sutClass' => ArrayStore::class,
-                'dependencies' => [
-                    Store::class,
-                    Oauth2Provider::class,
-                ],
                 'setupFunction' => fn () => null,
                 'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
             ],
 
             'modelStore' => [
                 'sutClass' => ModelStore::class,
-                'dependencies' => [
-                    Store::class,
-                    Oauth2Provider::class,
-                ],
                 'setupFunction' => fn () => Xero::useModelStorage(User::create()),
                 'createExistingData' => function (OauthCredentialManager $credentialManager, $data) {
                     Xero::getModelStorage()->update(['xero_credentials' => $data]);
@@ -229,23 +211,12 @@ class CredentialManagersTest extends TestCase
 
             'authenticatedUserStore' => [
                 'sutClass' => AuthenticatedUserStore::class,
-                'dependencies' => [
-                    Store::class,
-                    Oauth2Provider::class,
-                ],
                 'setupFunction' => fn () => auth()->login(User::create()),
                 'createExistingData' => function (OauthCredentialManager $credentialManager, $data) {
                     $credentialManager->model->update(['xero_credentials' => $data]);
                 },
             ],
         ];
-    }
-
-    private function loadDependencies(array $dependencies): array
-    {
-        return collect($dependencies)
-            ->map(fn ($dependency) => app($dependency))
-            ->toArray();
     }
 }
 
