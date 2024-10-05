@@ -27,7 +27,6 @@ class ArrayStore extends BaseCredentialManager implements OauthCredentialManager
             'tenants' => $tenants ?? $this->getTenants(),
         ];
     }
-
     protected function data(string $key = null)
     {
         if (! $this->exists()) {

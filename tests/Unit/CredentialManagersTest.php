@@ -2,17 +2,15 @@
 
 namespace Tests\Webfox\Xero\Unit;
 
-use Exception;
 use Illuminate\Cache\Repository;
-use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
+use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
 use Webfox\Xero\Oauth2CredentialManagers\AuthenticatedUserStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
@@ -31,14 +29,14 @@ class CredentialManagersTest extends TestCase
 
         $sut = new $sutClass();
 
-        $this->assertThrows(fn () => $sut->getAccessToken(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn () => $sut->getRefreshToken(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn () => $sut->getTenants(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn () => $sut->getTenantId(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn () => $sut->getExpires(), Exception::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn () => $sut->getData(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getAccessToken(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getRefreshToken(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenants(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenantId(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getExpires(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getData(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
-        $this->assertThrows(fn () => $sut->isExpired(), Exception::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->isExpired(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
         $this->assertNull($sut->getUser());
     }
 
