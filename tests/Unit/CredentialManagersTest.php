@@ -3,13 +3,9 @@
 namespace Tests\Webfox\Xero\Unit;
 
 use Illuminate\Cache\Repository;
-use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Mockery\Mock;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
@@ -193,7 +189,7 @@ class CredentialManagersTest extends TestCase
         $sut = new $sutClass();
 
         $createExistingData($sut, [
-            'tenants' => []
+            'tenants' => [],
         ]);
 
         $this->assertThrows(fn () => $sut->getTenantId(1), XeroTenantNotFound::class, 'No such tenant exists');

@@ -2,7 +2,6 @@
 
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Filesystem\FilesystemManager;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
