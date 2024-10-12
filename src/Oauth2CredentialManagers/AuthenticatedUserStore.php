@@ -7,10 +7,13 @@ use Webfox\Xero\Exceptions\XeroUserNotAuthenticated;
 
 class AuthenticatedUserStore extends ModelStore
 {
+    /**
+     * @throws XeroUserNotAuthenticated
+     */
     public function __construct()
     {
         if (! Auth::check()) {
-            throw new XeroUserNotAuthenticated('User is not authenticated');
+            throw XeroUserNotAuthenticated::make();
         }
 
         parent::__construct();

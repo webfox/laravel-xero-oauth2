@@ -4,6 +4,8 @@ namespace Webfox\Xero\Oauth2CredentialManagers;
 
 use Illuminate\Cache\Repository;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
 use Webfox\Xero\OauthCredentialManager;
 
@@ -36,10 +38,13 @@ class CacheStore extends BaseCredentialManager implements OauthCredentialManager
         ]);
     }
 
+    /**
+     * @throws XeroCredentialsNotFound
+     */
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
+            throw XeroCredentialsNotFound::make();
         }
 
         $cacheData = $this->cache->get($this->cacheKey);

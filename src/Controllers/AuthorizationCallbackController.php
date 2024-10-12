@@ -29,15 +29,7 @@ class AuthorizationCallbackController extends Controller
             ]);
 
             if ($request->has('error')) {
-                throw new OAuthException(
-                    Str::headline(
-                        sprintf(
-                            '%s: %s',
-                            $request->get('error'),
-                            $request->get('error_description')
-                        )
-                    )
-                );
+                throw OAuthException::make($request->get('error'), $request->get('error_description'));
             }
 
             $accessToken = $provider->getAccessToken('authorization_code', $request->only('code'));

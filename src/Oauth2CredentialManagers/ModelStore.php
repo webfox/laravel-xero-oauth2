@@ -40,7 +40,7 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
+            throw XeroCredentialsNotFound::make();
         }
 
         $data = $this->model->{$this->getModelKey()};

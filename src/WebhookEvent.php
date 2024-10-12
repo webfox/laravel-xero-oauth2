@@ -3,6 +3,7 @@
 namespace Webfox\Xero;
 
 use Illuminate\Support\Collection;
+use Webfox\Xero\Exceptions\XeroMalformedWebhookEvent;
 use XeroAPI\XeroPHP\Api\AccountingApi;
 use XeroAPI\XeroPHP\Models\Accounting\Contact;
 use XeroAPI\XeroPHP\Models\Accounting\Invoice;
@@ -11,12 +12,15 @@ class WebhookEvent
 {
     protected Collection $properties;
 
+    /**
+     * @throws XeroMalformedWebhookEvent
+     */
     public function __construct(protected OauthCredentialManager $credentialManager, protected AccountingApi $accountingApi, protected array $event)
     {
         $this->properties = new Collection($event);
 
         if (! $this->properties->has(['resourceUrl', 'resourceId', 'eventDateUtc', 'eventType', 'eventCategory', 'tenantId', 'tenantType'])) {
-            throw new \Exception('The event payload was malformed; missing required field');
+            throw XeroMalformedWebhookEvent::make();
         }
     }
 

@@ -12,7 +12,7 @@ abstract class XeroException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return __CLASS__.": [{$this->code}]: {$this->message}\n";
     }

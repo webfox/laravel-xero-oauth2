@@ -35,10 +35,13 @@ abstract class BaseCredentialManager
         return $this->data('tenants');
     }
 
+    /**
+     * @throws XeroTenantNotFound
+     */
     public function getTenantId(int $tenant = 0): string
     {
         if (! isset($this->data('tenants')[$tenant])) {
-            throw new XeroTenantNotFound('No such tenant exists');
+            throw XeroTenantNotFound::make();
         }
 
         return $this->data('tenants')[$tenant]['Id'];
