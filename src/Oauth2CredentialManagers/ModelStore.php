@@ -14,7 +14,7 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 
     public function __construct()
     {
-        if($model = Xero::getModelStorage()) {
+        if ($model = Xero::getModelStorage()) {
             $this->model = $model;
         }
 
