@@ -9,6 +9,7 @@ use Mockery\MockInterface;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\XeroOAuth;
 use Webfox\Xero\Clients\AccountAPIClient;
+use Webfox\Xero\Exceptions\XeroMalformedWebhookEvent;
 use Webfox\Xero\OauthCredentialManager;
 use Webfox\Xero\WebhookEvent;
 use XeroAPI\XeroPHP\Api\AccountingApi;
@@ -21,7 +22,7 @@ class WebhookEventTest extends TestCase
     {
         XeroOAuth::fake();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(XeroMalformedWebhookEvent::class);
         $this->expectExceptionMessage('The event payload was malformed; missing required field');
 
         new WebhookEvent(app(OauthCredentialManager::class), app(AccountingApi::class), []);

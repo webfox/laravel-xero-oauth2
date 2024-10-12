@@ -11,7 +11,8 @@ use Webfox\Xero\OauthCredentialManager;
 
 class FileStore extends BaseCredentialManager implements OauthCredentialManager
 {
-    protected FilesystemAdapter $disk;
+    /** @var FilesystemManager */
+    protected $disk;
 
     protected string $filePath;
 

@@ -3,14 +3,21 @@
 namespace Tests\Webfox\Xero\Unit;
 
 use Illuminate\Cache\Repository;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Mockery\Mock;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
 use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
+use Webfox\Xero\Exceptions\XeroFailedToWriteFile;
+use Webfox\Xero\Exceptions\XeroTenantNotFound;
+use Webfox\Xero\Exceptions\XeroUserNotAuthenticated;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
 use Webfox\Xero\Oauth2CredentialManagers\AuthenticatedUserStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
@@ -176,6 +183,36 @@ class CredentialManagersTest extends TestCase
             'username' => 'JamesFreeman',
             'session_id' => '',
         ], $sut->getUser());
+    }
+
+    #[DataProvider('credentialManagers')]
+    public function test_that_getting_a_non_existent_tenant_will_throw_an_exception($sutClass, $setupFunction, $createExistingData)
+    {
+        $setupFunction();
+
+        $sut = new $sutClass();
+
+        $createExistingData($sut, [
+            'tenants' => []
+        ]);
+
+        $this->assertThrows(fn () => $sut->getTenantId(1), XeroTenantNotFound::class, 'No such tenant exists');
+    }
+
+    public function test_that_if_guest_it_will_throw_exception_for_authenticated_user_store()
+    {
+        $this->assertThrows(fn () => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+    }
+
+    public function test_that_it_will_throw_exception_if_failed_to_write_file()
+    {
+        Storage::fake();
+
+        Storage::shouldReceive('disk->put')->andReturnFalse();
+
+        $sut = new FileStore();
+
+        $this->assertThrows(fn () => $sut->store(new MockAccessToken(), ['tenant' => 'tenant_id', 'expires' => 3600]), XeroFailedToWriteFile::class, 'Failed to write file: xero.json');
     }
 
     public static function credentialManagers(): array
