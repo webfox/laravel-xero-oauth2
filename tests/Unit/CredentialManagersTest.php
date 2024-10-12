@@ -245,6 +245,10 @@ class CredentialManagersTest extends TestCase
 
 class User extends Authenticatable
 {
+    protected $casts = [
+        'xero_credentials' => 'array',
+    ];
+
     protected function casts()
     {
         return [
