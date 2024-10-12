@@ -31,14 +31,14 @@ class CredentialManagersTest extends TestCase
 
         $sut = new $sutClass();
 
-        $this->assertThrows(fn() => $sut->getAccessToken(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getRefreshToken(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getTenants(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getTenantId(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getExpires(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
-        $this->assertThrows(fn() => $sut->getData(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getAccessToken(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getRefreshToken(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenants(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getTenantId(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getExpires(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->getData(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
         $this->assertFalse($sut->exists());
-        $this->assertThrows(fn() => $sut->isExpired(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
+        $this->assertThrows(fn () => $sut->isExpired(), XeroCredentialsNotFound::class, 'Xero oauth credentials are missing');
         $this->assertNull($sut->getUser());
     }
 
@@ -182,7 +182,7 @@ class CredentialManagersTest extends TestCase
 
     public function test_that_if_guest_it_will_throw_exception_for_authenticated_user_store()
     {
-        $this->assertThrows(fn() => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
     }
 
     public function test_that_you_can_change_the_default_guard_for_users()
@@ -191,12 +191,12 @@ class CredentialManagersTest extends TestCase
             'admin' => [
                 'driver' => 'session',
                 'provider' => 'users',
-            ]
+            ],
         ]));
 
         auth()->guard('admin')->login(User::create(['xero_credentials' => ['token' => 'foo']]));
 
-        $this->assertThrows(fn() => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
 
         Xero::setDefaultAuthGuard('admin');
 
@@ -208,25 +208,25 @@ class CredentialManagersTest extends TestCase
         return [
             'fileStore' => [
                 'sutClass' => FileStore::class,
-                'setupFunction' => fn() => Storage::fake(),
-                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => Storage::put('xero.json', json_encode($data)),
+                'setupFunction' => fn () => Storage::fake(),
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => Storage::put('xero.json', json_encode($data)),
             ],
 
             'cacheStore' => [
                 'sutClass' => CacheStore::class,
-                'setupFunction' => fn() => null,
-                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth', $data),
+                'setupFunction' => fn () => null,
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => app(Repository::class)->put('xero_oauth', $data),
             ],
 
             'arrayStore' => [
                 'sutClass' => ArrayStore::class,
-                'setupFunction' => fn() => null,
-                'createExistingData' => fn(OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
+                'setupFunction' => fn () => null,
+                'createExistingData' => fn (OauthCredentialManager $credentialManager, $data) => $credentialManager->dataStorage = $data,
             ],
 
             'modelStore' => [
                 'sutClass' => ModelStore::class,
-                'setupFunction' => fn() => Xero::useModelStorage(User::create()),
+                'setupFunction' => fn () => Xero::useModelStorage(User::create()),
                 'createExistingData' => function (OauthCredentialManager $credentialManager, $data) {
                     Xero::getModelStorage()->update(['xero_credentials' => $data]);
                 },
@@ -234,7 +234,7 @@ class CredentialManagersTest extends TestCase
 
             'authenticatedUserStore' => [
                 'sutClass' => AuthenticatedUserStore::class,
-                'setupFunction' => fn() => auth()->login(User::create()),
+                'setupFunction' => fn () => auth()->login(User::create()),
                 'createExistingData' => function (OauthCredentialManager $credentialManager, $data) {
                     $credentialManager->model->update(['xero_credentials' => $data]);
                 },

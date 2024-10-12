@@ -19,7 +19,6 @@ abstract class BaseCredentialManager
         $this->oauthProvider = app(Oauth2Provider::class);
     }
 
-
     abstract public function exists(): bool;
 
     abstract protected function store(AccessTokenInterface $token, array $tenants = null): void;
