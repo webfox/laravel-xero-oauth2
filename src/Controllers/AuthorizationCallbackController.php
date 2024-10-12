@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Str;
 use Webfox\Xero\Events\XeroAuthorized;
 use Webfox\Xero\Exceptions\OAuthException;
 use Webfox\Xero\Oauth2Provider;
