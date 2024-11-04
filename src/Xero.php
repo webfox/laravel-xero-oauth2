@@ -32,7 +32,6 @@ class Xero
         return static::$modelAttribute;
     }
 
-
     public static function getDefaultAuthGuard(): string
     {
         return static::$defaultAuthGuard;

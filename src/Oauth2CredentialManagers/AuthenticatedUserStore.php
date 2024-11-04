@@ -15,7 +15,7 @@ class AuthenticatedUserStore extends ModelStore
 
         parent::__construct();
 
-        if($auth->check()) {
+        if ($auth->check()) {
             $this->model = $auth->user();
         }
     }
