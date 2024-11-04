@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Xero
 {
-    public static ?Model $modelStorage = null;
+    public static Model $modelStorage;
 
     public static string $modelAttribute = 'xero_credentials';
-
-    public static string $defaultAuthGuard = 'web';
 
     public static function useModelStorage(Model $model): void
     {
@@ -22,7 +20,7 @@ class Xero
         static::$modelAttribute = $attribute;
     }
 
-    public static function getModelStorage(): ?Model
+    public static function getModelStorage(): Model
     {
         return static::$modelStorage;
     }
@@ -30,15 +28,5 @@ class Xero
     public static function getModelAttribute(): string
     {
         return static::$modelAttribute;
-    }
-
-    public static function getDefaultAuthGuard(): string
-    {
-        return static::$defaultAuthGuard;
-    }
-
-    public static function setDefaultAuthGuard(string $guard): void
-    {
-        static::$defaultAuthGuard = $guard;
     }
 }

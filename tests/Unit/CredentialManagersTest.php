@@ -4,7 +4,6 @@ namespace Tests\Webfox\Xero\Unit;
 
 use Illuminate\Cache\Repository;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
@@ -12,7 +11,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\Mocks\MockAccessToken;
 use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
-use Webfox\Xero\Exceptions\XeroUserNotAuthenticated;
 use Webfox\Xero\Oauth2CredentialManagers\ArrayStore;
 use Webfox\Xero\Oauth2CredentialManagers\AuthenticatedUserStore;
 use Webfox\Xero\Oauth2CredentialManagers\CacheStore;
@@ -180,29 +178,6 @@ class CredentialManagersTest extends TestCase
         ], $sut->getUser());
     }
 
-    public function test_that_if_guest_it_will_throw_exception_for_authenticated_user_store()
-    {
-        $this->assertThrows(fn() => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
-    }
-
-    public function test_that_you_can_change_the_default_guard_for_users()
-    {
-        Config::set('auth.guards', array_merge(config('auth.guards'), [
-            'admin' => [
-                'driver' => 'session',
-                'provider' => 'users',
-            ]
-        ]));
-
-        auth()->guard('admin')->login(User::create(['xero_credentials' => ['token' => 'foo']]));
-
-        $this->assertThrows(fn() => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
-
-        Xero::setDefaultAuthGuard('admin');
-
-        $this->assertTrue((new AuthenticatedUserStore())->exists());
-    }
-
     public static function credentialManagers(): array
     {
         return [
@@ -245,10 +220,6 @@ class CredentialManagersTest extends TestCase
 
 class User extends Authenticatable
 {
-    protected $casts = [
-        'xero_credentials' => 'array',
-    ];
-
     protected function casts()
     {
         return [

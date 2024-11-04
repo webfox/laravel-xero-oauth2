@@ -10,14 +10,12 @@ class AuthenticatedUserStore extends ModelStore
 {
     public function __construct()
     {
-        $auth = Auth::guard(Xero::getDefaultAuthGuard());
-
-        if (! $auth->check()) {
+        if (! Auth::check()) {
             throw new XeroUserNotAuthenticated('User is not authenticated');
         }
 
         parent::__construct();
 
-        $this->model = $auth->user();
+        $this->model = Auth::user();
     }
 }
