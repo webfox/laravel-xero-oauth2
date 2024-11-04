@@ -3,6 +3,7 @@
 namespace Webfox\Xero\Oauth2CredentialManagers;
 
 use Illuminate\Session\Store;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Exceptions\XeroTenantNotFound;
 use Webfox\Xero\Oauth2Provider;
 use XeroAPI\XeroPHP\JWTClaims;
@@ -17,6 +18,10 @@ abstract class BaseCredentialManager
         $this->session = app(Store::class);
         $this->oauthProvider = app(Oauth2Provider::class);
     }
+
+    abstract public function exists(): bool;
+
+    abstract protected function store(AccessTokenInterface $token, array $tenants = null): void;
 
     abstract protected function data(string $key = null);
 

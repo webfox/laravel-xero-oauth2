@@ -4,6 +4,7 @@ namespace Tests\Webfox\Xero\Unit;
 
 use Illuminate\Cache\Repository;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Mockery\MockInterface;
@@ -25,6 +26,15 @@ use Webfox\Xero\Xero;
 
 class CredentialManagersTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Xero::$modelStorage = null;
+        Xero::$modelAttribute = 'xero_credentials';
+        Xero::$defaultAuthGuard = 'web';
+    }
+
     #[DataProvider('credentialManagers')]
     public function test_you_can_get_credential_store_without_existing_data($sutClass, $setupFunction, $createExistingData)
     {
@@ -195,11 +205,6 @@ class CredentialManagersTest extends TestCase
         $this->assertThrows(fn () => $sut->getTenantId(1), XeroTenantNotFound::class, 'No such tenant exists');
     }
 
-    public function test_that_if_guest_it_will_throw_exception_for_authenticated_user_store()
-    {
-        $this->assertThrows(fn () => new AuthenticatedUserStore(), XeroUserNotAuthenticated::class, 'User is not authenticated');
-    }
-
     public function test_that_it_will_throw_exception_if_failed_to_write_file()
     {
         Storage::fake();
@@ -209,6 +214,42 @@ class CredentialManagersTest extends TestCase
         $sut = new FileStore();
 
         $this->assertThrows(fn () => $sut->store(new MockAccessToken(), ['tenant' => 'tenant_id', 'expires' => 3600]), XeroFailedToWriteFile::class, 'Failed to write file: xero.json');
+    }
+
+    public function test_that_it_will_throw_exception_if_not_authenticated()
+    {
+        $this->assertGuest();
+
+        $sut = new AuthenticatedUserStore();
+
+        $this->assertThrows(fn () => $sut->data(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => $sut->getAccessToken(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => $sut->getRefreshToken(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => $sut->getTenants(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => $sut->getTenantId(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => $sut->getExpires(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertThrows(fn () => $sut->getData(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertFalse($sut->exists());
+        $this->assertThrows(fn () => $sut->isExpired(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+        $this->assertNull($sut->getUser());
+    }
+
+    public function test_that_you_can_change_the_default_guard_for_users()
+    {
+        Config::set('auth.guards', array_merge(config('auth.guards'), [
+            'admin' => [
+                'driver' => 'session',
+                'provider' => 'users',
+            ],
+        ]));
+
+        auth()->guard('admin')->login(User::create(['xero_credentials' => ['token' => 'foo']]));
+
+        $this->assertThrows(fn () => (new AuthenticatedUserStore())->data(), XeroUserNotAuthenticated::class, 'User is not authenticated');
+
+        Xero::setDefaultAuthGuard('admin');
+
+        $this->assertIsArray((new AuthenticatedUserStore())->data());
     }
 
     public static function credentialManagers(): array
@@ -253,6 +294,10 @@ class CredentialManagersTest extends TestCase
 
 class User extends Authenticatable
 {
+    protected $casts = [
+        'xero_credentials' => 'array',
+    ];
+
     protected function casts()
     {
         return [
