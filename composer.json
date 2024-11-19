@@ -27,7 +27,7 @@
     "require": {
         "php": "^8.2|^8.3|^8.4",
         "xeroapi/xero-php-oauth2": "^7.1",
-        "laravel/framework": "^11.28.1"
+        "laravel/framework": "^11.33.1"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
