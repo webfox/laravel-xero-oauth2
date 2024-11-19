@@ -46,4 +46,4 @@ jobs:
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction --ignore-platform-reqs
 
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --display-deprecations --fail-on-deprecation
