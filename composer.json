@@ -30,7 +30,7 @@
         "laravel/framework": "^11.34.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^9.0",
+        "orchestra/testbench": "^9.6.1",
         "phpunit/phpunit": "^10.5.35|^11.3.6",
         "symfony/var-dumper": "^7.0.10"
     },
