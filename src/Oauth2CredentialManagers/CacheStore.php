@@ -36,10 +36,13 @@ class CacheStore extends BaseCredentialManager implements OauthCredentialManager
         ]);
     }
 
+    /**
+     * @throws XeroCredentialsNotFound
+     */
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
+            throw XeroCredentialsNotFound::make();
         }
 
         $cacheData = $this->cache->get($this->cacheKey);

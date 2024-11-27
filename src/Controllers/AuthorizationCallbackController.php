@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Str;
 use Webfox\Xero\Events\XeroAuthorized;
 use Webfox\Xero\Exceptions\OAuthException;
 use Webfox\Xero\Oauth2Provider;
@@ -29,15 +28,7 @@ class AuthorizationCallbackController extends Controller
             ]);
 
             if ($request->has('error')) {
-                throw new OAuthException(
-                    Str::headline(
-                        sprintf(
-                            '%s: %s',
-                            $request->get('error'),
-                            $request->get('error_description')
-                        )
-                    )
-                );
+                throw OAuthException::make($request->get('error'), $request->get('error_description'));
             }
 
             $accessToken = $provider->getAccessToken('authorization_code', $request->only('code'));

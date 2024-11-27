@@ -5,6 +5,8 @@ namespace Tests\Webfox\Xero\Unit;
 use Illuminate\Support\Facades\Route;
 use Tests\Webfox\Xero\TestCase;
 use Tests\Webfox\Xero\TestSupport\XeroOAuth;
+use Webfox\Xero\Exceptions\XeroFailedToDecodeWebhookEvent;
+use Webfox\Xero\Exceptions\XeroMalformedWebhook;
 use Webfox\Xero\OauthCredentialManager;
 use Webfox\Xero\Webhook;
 use Webfox\Xero\WebhookEvent;
@@ -16,7 +18,7 @@ class WebhookTest extends TestCase
     {
         XeroOAuth::fake();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(XeroFailedToDecodeWebhookEvent::class);
         $this->expectExceptionMessage('The webhook payload could not be decoded: No error');
 
         new Webhook(
@@ -31,7 +33,7 @@ class WebhookTest extends TestCase
     {
         XeroOAuth::fake();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(XeroMalformedWebhook::class);
         $this->expectExceptionMessage('The webhook payload was malformed');
 
         new Webhook(

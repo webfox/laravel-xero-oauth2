@@ -5,6 +5,7 @@ namespace Webfox\Xero\Oauth2CredentialManagers;
 use Illuminate\Filesystem\FilesystemManager;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Webfox\Xero\Exceptions\XeroCredentialsNotFound;
+use Webfox\Xero\Exceptions\XeroFailedToWriteFile;
 use Webfox\Xero\OauthCredentialManager;
 
 class FileStore extends BaseCredentialManager implements OauthCredentialManager
@@ -12,7 +13,6 @@ class FileStore extends BaseCredentialManager implements OauthCredentialManager
     /** @var FilesystemManager */
     protected $disk;
 
-    /** @var string */
     protected string $filePath;
 
     public function __construct()
@@ -28,6 +28,9 @@ class FileStore extends BaseCredentialManager implements OauthCredentialManager
         return $this->disk->exists($this->filePath);
     }
 
+    /**
+     * @throws XeroFailedToWriteFile
+     */
     public function store(AccessTokenInterface $token, array $tenants = null): void
     {
         $ret = $this->disk->put($this->filePath, json_encode([
@@ -39,14 +42,17 @@ class FileStore extends BaseCredentialManager implements OauthCredentialManager
         ]), 'private');
 
         if ($ret === false) {
-            throw new \Exception("Failed to write to file: {$this->filePath}");
+            throw XeroFailedToWriteFile::make($this->filePath);
         }
     }
 
+    /**
+     * @throws XeroCredentialsNotFound
+     */
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
+            throw XeroCredentialsNotFound::make();
         }
 
         $cacheData = json_decode($this->disk->get($this->filePath), true);

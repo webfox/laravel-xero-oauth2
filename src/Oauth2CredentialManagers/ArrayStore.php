@@ -26,10 +26,13 @@ class ArrayStore extends BaseCredentialManager implements OauthCredentialManager
         ];
     }
 
+    /**
+     * @throws XeroCredentialsNotFound
+     */
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
+            throw XeroCredentialsNotFound::make();
         }
 
         return $key === null ? $this->dataStorage : $this->dataStorage[$key] ?? null;

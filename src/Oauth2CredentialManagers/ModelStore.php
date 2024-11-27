@@ -14,14 +14,16 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
 
     public function __construct()
     {
-        $this->model = Xero::getModelStorage();
+        if ($model = Xero::getModelStorage()) {
+            $this->model = $model;
+        }
 
         parent::__construct();
     }
 
     public function exists(): bool
     {
-        return $this->model?->exists && is_array($this->model->{$this->getModelKey()});
+        return isset($this->model) && $this->model->exists && is_array($this->model->{$this->getModelKey()});
     }
 
     public function store(AccessTokenInterface $token, array $tenants = null): void
@@ -40,7 +42,7 @@ class ModelStore extends BaseCredentialManager implements OauthCredentialManager
     protected function data(string $key = null)
     {
         if (! $this->exists()) {
-            throw new XeroCredentialsNotFound('Xero oauth credentials are missing');
+            throw XeroCredentialsNotFound::make();
         }
 
         $data = $this->model->{$this->getModelKey()};
