@@ -27,12 +27,12 @@
     "require": {
         "php": "^8.2|^8.3|^8.4",
         "xeroapi/xero-php-oauth2": "^7.1",
-        "laravel/framework": "^11.34.0"
+        "laravel/framework": "^10.48.25|^11.34.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^9.6.1",
+        "orchestra/testbench": "^8.28.0|^9.6.1",
         "phpunit/phpunit": "^10.5.35|^11.3.6",
-        "symfony/var-dumper": "^7.0.10"
+        "symfony/var-dumper": "^7.1.3"
     },
     "autoload": {
         "psr-4": {
