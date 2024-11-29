@@ -30,7 +30,7 @@ For the package to know which model you want to use, you will need to call the f
 ```php
 use Webfox\Xero\Xero;
 
-Xero::useModelStore(Settings::class);
+Xero::useModelStore(User::find(Auth::user()->id));
 ```
 
 By default, the package will use the `xero_credentials` field, Should you need to rename this field, you can do so by calling:
