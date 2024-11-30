@@ -163,7 +163,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
 #### Laravel 8-10
 
-Use the `reportable` method in the `App\Exceptions\Handler` class:
+Use the `renderable` method in the `App\Exceptions\Handler` class:
 
 ```php
     public function register()
