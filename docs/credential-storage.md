@@ -29,7 +29,7 @@ For the package to know which model you want to use, you will need to call the f
 
 ```php
 use Webfox\Xero\Xero;
-use App\Models\User;
+use App\Models\Settings;
 
 Xero::useModelStore(Settings::first());
 ```
