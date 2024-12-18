@@ -14,6 +14,9 @@ You can install this package via composer using the following command:
 composer require webfox/laravel-xero-oauth2
 ```
 
+## Documentation
+Documentation for this package can be found at https://webfox.github.io/laravel-xero-oauth2/
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
