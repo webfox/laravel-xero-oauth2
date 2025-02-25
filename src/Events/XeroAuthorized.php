@@ -6,7 +6,7 @@ class XeroAuthorized
 {
     public string $token;
     public string $refresh_token;
-    public array $id_token;
+    public string $id_token;
     public string $expires;
     public array $tenants;
 

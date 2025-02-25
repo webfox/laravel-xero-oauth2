@@ -40,9 +40,7 @@ class MockAccessToken implements AccessTokenInterface, Arrayable
     public function getValues()
     {
         return [
-            'id_token' => [
-                'token' => 'foo',
-            ],
+            'id_token' => 'foo'
         ];
     }
 

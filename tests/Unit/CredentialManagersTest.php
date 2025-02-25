@@ -63,9 +63,7 @@ class CredentialManagersTest extends TestCase
         $createExistingData($sut, $existingData = [
             'token' => 'default-token',
             'refresh_token' => 'default-refresh-token',
-            'id_token' => [
-                'token' => 'foo',
-            ],
+            'id_token' => 'foo',
             'expires' => $expires = strtotime('+1 hour'),
             'tenants' => [
                 [
@@ -126,9 +124,7 @@ class CredentialManagersTest extends TestCase
         $this->assertEquals([
             'token' => 'token',
             'refresh_token' => 'refresh-token',
-            'id_token' => [
-                'token' => 'foo',
-            ],
+            'id_token' => 'foo',
             'expires' => '1234',
             'tenants' => [
                 'tenant' => 'tenant_id',
@@ -161,9 +157,7 @@ class CredentialManagersTest extends TestCase
         $this->assertEquals([
             'token' => 'token',
             'refresh_token' => 'refresh-token',
-            'id_token' => [
-                'token' => 'foo',
-            ],
+            'id_token' => 'foo',
             'expires' => '1234',
             'tenants' => null,
         ], $sut->getData());

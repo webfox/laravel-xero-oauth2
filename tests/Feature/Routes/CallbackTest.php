@@ -62,7 +62,7 @@ class CallbackTest extends TestCase
         Event::assertDispatched(XeroAuthorized::class, function (XeroAuthorized $event) {
             $this->assertEquals('token', $event->token);
             $this->assertEquals('refresh-token', $event->refresh_token);
-            $this->assertEquals(['token' => 'foo'], $event->id_token);
+            $this->assertEquals('foo', $event->id_token);
             $this->assertEquals('1234', $event->expires);
             $this->assertEquals([
                 [
