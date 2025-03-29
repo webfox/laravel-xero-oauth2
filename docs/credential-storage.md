@@ -36,6 +36,7 @@ Xero::useModelStorage(Settings::first());
 
 If you need to resolve a model depending on some application state such as the authenticated user, this should be added to [a custom middleware](https://laravel.com/docs/11.x/middleware#defining-middleware) instead of the app service provider, e.g.
 
+```php
 <?php
 
 namespace App\Http\Middleware;
@@ -56,6 +57,7 @@ class ConfigureXeroMiddleware
 
     }
 }
+```
 
 By default, the package will use the `xero_credentials` field, Should you need to rename this field, you can do so by calling:
 
