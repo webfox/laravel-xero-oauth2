@@ -31,7 +31,7 @@ For the package to know which model you want to use, you will need to call the f
 use Webfox\Xero\Xero;
 use App\Models\Settings;
 
-Xero::useModelStore(Settings::first());
+Xero::useModelStorage(Settings::first());
 ```
 
 If you need to resolve a model depending on some application state such as the authenticated user, this should be added to [a custom middleware](https://laravel.com/docs/11.x/middleware#defining-middleware) instead of the app service provider, e.g.
@@ -49,7 +49,7 @@ class ConfigureXeroMiddleware
     public function handle(Request $request, Closure $next)
     {
         if ($request->user()) {
-            Xero::useModelStore($request->user()->currentTeam);
+            Xero::useModelStorage($request->user()->currentTeam);
         }
 
         return $next($request);
